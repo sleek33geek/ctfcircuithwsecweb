@@ -25,19 +25,17 @@ body {
   object-fit: contain; 
 }
 
-/* GRID overlay locked to the container */
+/* GRID overlay locked to the container instead of the whole screen */
 #wave-grid {
-  position: absolute; 
-  top: 40%; /* Adjust this percentage to place the rows where you want on the image */
+  position: absolute; /* Locks it to the .page-container box */
+  top: 15%; /* Adjust this percentage to move both rows higher or lower */
   left: 50%;
   transform: translateX(-50%);
-  width: 80%; 
+  width: 80%; /* Keeps it constrained over the image */
   
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  /* Explicitly tell the grid to use 2 rows so they don't collapse */
-  grid-template-rows: repeat(2, auto); 
-  row-gap: 10px; /* Space between the first and second row */
+  row-gap: 15px; /* Keeps the two rows close together */
   justify-items: center;
 
   pointer-events: none;
