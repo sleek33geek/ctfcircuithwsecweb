@@ -50,9 +50,9 @@ body {
   animation: waveAnim 1.5s infinite;
 }
 
-.wave:nth-child(1) { animation-delay: 0s; }
-.wave:nth-child(2) { animation-delay: 0.3s; }
-.wave:nth-child(3) { animation-delay: 0.6s; }
+.wave:nth-child(1) { animation-delay: 120s; }
+.wave:nth-child(2) { animation-delay: 120.3s; }
+.wave:nth-child(3) { animation-delay: 120.6s; }
 
 @keyframes waveAnim {
   0%, 80%, 100% {
