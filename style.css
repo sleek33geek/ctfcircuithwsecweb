@@ -1,16 +1,15 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  background-color: #000; /* Optional: fills empty side/top spaces with color */
-}
-
 body {
   background-image: url("images/webpage_updated.png");
-  background-size: contain;
+  background-size: auto; /* Keeps the image at its true, full size */
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: top left; /* Starts the image from the top-left corner */
+  
+  /* Replace these numbers with your image's actual pixel dimensions! */
+  min-width: 1920px; 
+  min-height: 1080px; 
+  
+  margin: 0;
 }
-
 /*body {
   background-image: url("images/webpage_updated.png");
   background-size: cover;
