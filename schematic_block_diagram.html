@@ -1,31 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Image</title>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Schematic Block Diagram</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #000;
-        }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        /* Ensures the background doesn't create unexpected scrollbars */
+        overflow: hidden; 
+      }
 
-        .full-page-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+      body {
+        /* Points to your root images/ folder */
+        background-image: url('images/schematic.drawio.png'); 
+        /* Centers the image perfectly */
+        background-position: center center; 
+        /* Prevents the image from repeating like a tile */
+        background-repeat: no-repeat; 
+        /* Scales the image dynamically to cover the whole screen */
+        background-size: contain; 
+        /* Optional fallback color in case the image fails to load */
+        background-color: #ffffff; 
+      }
     </style>
-</head>
-<body>
-
-    <img class="full-page-img" src="https://sleek33geek.github.io/schematic.drawio.png" alt="Full Screen Background">
-
-
-</body>
+  </head>
+  <body>
+    <!-- The page is left completely empty as requested to show only the background -->
+  </body>
 </html>
