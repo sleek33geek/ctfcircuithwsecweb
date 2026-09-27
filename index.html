@@ -1,291 +1,612 @@
+
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>My test page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="style.css">
-    
-    <style>
-      /* Lock html/body and allow full 2D scrolling (up, down, left, right) over the background */
-      html, body {
-        margin: 0;
-        padding: 0;
-        color: #fff;
-        font-family: monospace;
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RTL Signal GUI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        /* Allow scrolling in all directions */
-        overflow: auto;
-        min-height: 100vh;
-        min-width: 100vw;
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        /* Background image setup for full panning/scrolling */
-        background-image: url('images/chip_background_gui.png');
-        background-size: auto; /* Keeps the original image size so you can scroll to see all of it if it's large */
-        background-repeat: no-repeat;
-        background-position: top left;
-      }
+    /*
+     * The old page used the chip background as the main GUI.
+     * Keep it as a scrollable 2-D page: if the complete GUI does
+     * not fit the browser window, the user can scroll horizontally
+     * and/or vertically to reach every edge.
+     */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-width: 100%;
+      min-height: 100%;
 
-      .page-layout {
-        display: flex;
-        flex-direction: column;
+      color: #fff;
+      font-family: monospace;
 
-        /* Minimum dimensions ensuring the background image area is large enough to scroll */
-        min-width: 1400px;
-        min-height: 900px;
+      overflow: auto;
 
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-      }
+      background: #111;
+    }
 
-      /* Top section containing your content and background waves */
-      .top-section {
-        flex: 1; /* Takes up remaining space above the scopes */
-        padding: 20px;
-        box-sizing: border-box;
-        position: relative;
-      }
+    /*
+     * This is the "map" containing the original GUI background.
+     *
+     * The supplied background is 524 x 403 px, so it is displayed
+     * at 2x size.  The GUI therefore has a stable 1048 x 806 px
+     * coordinate system.
+     */
+    .gui-map {
+      position: relative;
 
-      /* Bottom section: 5 Oscilloscopes in 2 Columns + Calculator, pinned at the bottom */
-      .bottom-section {
-        height: 280px; /* Fixed or flexible height for the bottom control deck */
-        background: rgba(6, 9, 15, 0.92);
-        border-top: 2px solid #1a2634;
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* 2 Columns */
-        grid-template-rows: repeat(3, 1fr);
-        gap: 6px;
-        padding: 6px;
-        box-sizing: border-box;
-      }
+      width: 1048px;
+      height: 806px;
 
-      /* Oscilloscope panel styling */
-      .scope-panel {
-        background: rgba(5, 7, 10, 0.85);
-        backdrop-filter: blur(3px);
-        border: 1px solid rgba(0, 255, 136, 0.3);
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        overflow: hidden;
-      }
+      margin: 0 auto;
 
-      .scope-header {
-        font-size: 10px;
-        color: #00ff88;
-        padding: 2px 6px;
-        background: rgba(0, 255, 136, 0.05);
-        border-bottom: 1px solid #1e293b;
-        display: flex;
-        justify-content: space-between;
-      }
+      background-image: url("images/chip_background_gui.png");
+      background-repeat: no-repeat;
+      background-position: top left;
+      background-size: 1048px 806px;
+    }
 
-      canvas {
-        width: 100%;
-        flex: 1;
-        display: block;
-      }
 
-      /* Calculator panel spanning the right bottom cell */
-      .calc-panel {
-        grid-column: 2;
-        grid-row: 3;
-        background: rgba(9, 13, 22, 0.9);
-        backdrop-filter: blur(3px);
-        border: 1px solid #00ff88;
-        border-radius: 4px;
-        padding: 4px 8px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        font-size: 11px;
-        color: #00ff88;
-      }
+    /* ============================================================
+       LINKS ON THE ORIGINAL GUI
+       ============================================================ */
 
-      .calc-panel label {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        margin: 2px 0;
-        cursor: pointer;
-      }
+    /*
+     * Transparent clickable areas are placed over the existing
+     * buttons in the background image, so the original GUI artwork
+     * remains visible.
+     */
 
-      .hidden { display: none; }
-    </style>
-  </head>
-  
-  <body>
-    <div class="page-layout">
-      
-      <!-- TOP SECTION -->
-      <div class="top-section">
-        <p>
-          <a href="encrypt.html" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; color: #00ff88;">
-            <img src="images/RTL_icon.png" alt="Verilog Icon" style="width: 24px; height: 24px; vertical-align: middle;">
-            <span>View Verilog Code</span>
-          </a>
-        </p>
+    /* RTL icon -> encrypt.html */
+    .link-encrypt {
+      position: absolute;
+      left: 22px;
+      top: 44px;
+      width: 68px;
+      height: 54px;
+      z-index: 30;
+      display: block;
+    }
 
-        <div id="loading" class="hidden">
-          <span class="wave"></span>
-          <span class="wave"></span>
-          <span class="wave"></span>
-        </div>
+    /* Block-diagram icon -> schematic_block_diagram.html */
+    .link-schematic {
+      position: absolute;
+      left: 22px;
+      top: 126px;
+      width: 68px;
+      height: 54px;
+      z-index: 30;
+      display: block;
+    }
 
-        <div id="wave-grid" class="hidden">
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-        </div>
+
+    /* ============================================================
+       FIVE MOVING OSCILLOSCOPE PLOTS
+       ============================================================ */
+
+    /*
+     * The plots are NOT placed in a normal bottom-section grid.
+     *
+     * They are positioned directly on top of the five white/black
+     * oscilloscope windows already present in the background image.
+     *
+     * This is the plot layout from the previous working version.
+     */
+
+    .scope-panel {
+      position: absolute;
+
+      width: 264px;
+      height: 72px;
+
+      background: rgba(5, 7, 10, 0.80);
+
+      border: 1px solid rgba(0, 255, 136, 0.42);
+      border-radius: 2px;
+
+      display: flex;
+      flex-direction: column;
+
+      overflow: hidden;
+
+      z-index: 10;
+    }
+
+    /*
+     * Five plot locations.
+     *
+     * The background GUI is 2x the supplied 524 x 403 image:
+     *
+     *   left plots  ~= x 406
+     *   right plots ~= x 766
+     *
+     *   rows ~= y 552, 634, 716
+     */
+    #scope1 {
+      left: 406px;
+      top: 552px;
+    }
+
+    #scope2 {
+      left: 766px;
+      top: 552px;
+    }
+
+    #scope3 {
+      left: 406px;
+      top: 634px;
+    }
+
+    #scope4 {
+      left: 766px;
+      top: 634px;
+    }
+
+    #scope5 {
+      left: 406px;
+      top: 716px;
+    }
+
+    .scope-header {
+      height: 18px;
+      min-height: 18px;
+
+      padding: 1px 5px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      color: #00ff88;
+      font-size: 9px;
+      line-height: 1;
+
+      background: rgba(0, 255, 136, 0.07);
+      border-bottom: 1px solid rgba(0, 255, 136, 0.20);
+    }
+
+    .scope-header span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .scope-canvas {
+      width: 100%;
+      height: calc(100% - 18px);
+      display: block;
+    }
+
+
+    /* ============================================================
+       SUPERPOSITION MIXER
+       ============================================================ */
+
+    /*
+     * The mixer sits over the lower-right calculator area in the
+     * original GUI.
+     */
+    .calc-panel {
+      position: absolute;
+
+      left: 766px;
+      top: 716px;
+
+      width: 264px;
+      height: 72px;
+
+      z-index: 11;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 4px 7px;
+
+      background: rgba(9, 13, 22, 0.78);
+      border: 1px solid rgba(0, 255, 136, 0.45);
+      border-radius: 2px;
+
+      color: #00ff88;
+      font-size: 10px;
+    }
+
+    .calc-title {
+      margin-bottom: 3px;
+      font-weight: bold;
+    }
+
+    .mix-controls {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .mix-controls label {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .mix-controls input {
+      margin: 0;
+      accent-color: #00ff88;
+    }
+
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="gui-map">
+
+    <!-- ========================================================
+         LINKS
+         ======================================================== -->
+
+    <!-- Existing RTL button -> encrypt.html -->
+    <a
+      class="link-encrypt"
+      href="encrypt.html"
+      aria-label="View Verilog / RTL code"
+      title="View Verilog / RTL code">
+    </a>
+
+    <!-- Existing block-diagram button -> schematic_block_diagram.html -->
+    <a
+      class="link-schematic"
+      href="schematic_block_diagram.html"
+      aria-label="View schematic block diagram"
+      title="View schematic block diagram">
+    </a>
+
+
+    <!-- ========================================================
+         FIVE ANIMATED PLOTS
+         ======================================================== -->
+
+    <!-- Plot 1 -->
+    <section class="scope-panel" id="scope1">
+      <div class="scope-header">
+        <span>CH 1: Sine Wave</span>
+        <span>1 kHz</span>
       </div>
+      <canvas class="scope-canvas" id="canvas1"></canvas>
+    </section>
 
-      <!-- BOTTOM SECTION: 5 Oscilloscopes in 2 Columns + Calculator -->
-      <div class="bottom-section">
-        
-        <!-- Plot 1 -->
-        <div class="scope-panel" style="grid-column: 1; grid-row: 1;">
-          <div class="scope-header"><span>CH 1: Sine Wave</span><span>1 kHz</span></div>
-          <canvas id="canvas1"></canvas>
-        </div>
-
-        <!-- Plot 2 -->
-        <div class="scope-panel" style="grid-column: 2; grid-row: 1;">
-          <div class="scope-header"><span>CH 2: Square Wave</span><span>500 Hz</span></div>
-          <canvas id="canvas2"></canvas>
-        </div>
-
-        <!-- Plot 3 -->
-        <div class="scope-panel" style="grid-column: 1; grid-row: 2;">
-          <div class="scope-header"><span>CH 3: Triangle Wave</span><span>250 Hz</span></div>
-          <canvas id="canvas3"></canvas>
-        </div>
-
-        <!-- Plot 4 -->
-        <div class="scope-panel" style="grid-column: 2; grid-row: 2;">
-          <div class="scope-header"><span>CH 4: High-Freq Noise/Sine</span><span>2 kHz</span></div>
-          <canvas id="canvas4"></canvas>
-        </div>
-
-        <!-- Plot 5 -->
-        <div class="scope-panel" style="grid-column: 1; grid-row: 3;">
-          <div class="scope-header"><span>CH 5: Superposition Output</span><span>MATH</span></div>
-          <canvas id="canvas5"></canvas>
-        </div>
-
-        <!-- Calculator Panel -->
-        <div class="calc-panel">
-          <strong>🎛️ Superposition Mixer</strong>
-          <div>
-            <label><input type="checkbox" id="mix1" checked> CH1</label>
-            <label><input type="checkbox" id="mix2" checked> CH2</label>
-            <label><input type="checkbox" id="mix3"> CH3</label>
-            <label><input type="checkbox" id="mix4"> CH4</label>
-          </div>
-        </div>
-
+    <!-- Plot 2 -->
+    <section class="scope-panel" id="scope2">
+      <div class="scope-header">
+        <span>CH 2: Square Wave</span>
+        <span>500 Hz</span>
       </div>
-    </div>
+      <canvas class="scope-canvas" id="canvas2"></canvas>
+    </section>
 
-    <!-- Scripts -->
-    <script>
+    <!-- Plot 3 -->
+    <section class="scope-panel" id="scope3">
+      <div class="scope-header">
+        <span>CH 3: Triangle Wave</span>
+        <span>250 Hz</span>
+      </div>
+      <canvas class="scope-canvas" id="canvas3"></canvas>
+    </section>
+
+    <!-- Plot 4 -->
+    <section class="scope-panel" id="scope4">
+      <div class="scope-header">
+        <span>CH 4: High-Freq Noise/Sine</span>
+        <span>2 kHz</span>
+      </div>
+      <canvas class="scope-canvas" id="canvas4"></canvas>
+    </section>
+
+    <!-- Plot 5 -->
+    <section class="scope-panel" id="scope5">
+      <div class="scope-header">
+        <span>CH 5: Superposition Output</span>
+        <span>MATH</span>
+      </div>
+      <canvas class="scope-canvas" id="canvas5"></canvas>
+    </section>
+
+
+    <!-- ========================================================
+         MIXER
+         ======================================================== -->
+
+    <section class="calc-panel">
+      <div class="calc-title">Superposition Mixer</div>
+
+      <div class="mix-controls">
+        <label>
+          <input type="checkbox" id="mix1" checked>
+          CH1
+        </label>
+
+        <label>
+          <input type="checkbox" id="mix2" checked>
+          CH2
+        </label>
+
+        <label>
+          <input type="checkbox" id="mix3">
+          CH3
+        </label>
+
+        <label>
+          <input type="checkbox" id="mix4">
+          CH4
+        </label>
+      </div>
+    </section>
+
+
+    <!-- Kept from the previous version -->
+    <div id="loading" class="hidden"></div>
+    <div id="wave-grid" class="hidden"></div>
+
+  </main>
+
+
+  <!-- ============================================================
+       DELAYED GUI SCRIPTS FROM THE PREVIOUS VERSION
+       ============================================================ -->
+
+  <script>
+    setTimeout(() => {
+      document.getElementById("loading").classList.remove("hidden");
+    }, 120000);
+  </script>
+
+  <script>
+    let timerStarted = false;
+
+    document.addEventListener("click", () => {
+      if (timerStarted) return;
+
+      timerStarted = true;
+
       setTimeout(() => {
-        document.getElementById("loading").classList.remove("hidden");
+        document.getElementById("wave-grid").classList.remove("hidden");
       }, 120000);
-    </script>
+    });
+  </script>
 
-    <script>
-      let timerStarted = false;
-      document.addEventListener("click", () => {
-        if (timerStarted) return;
-        timerStarted = true;
-        setTimeout(() => {
-          document.getElementById("wave-grid").classList.remove("hidden");
-        }, 120000);
-      });
-    </script>
 
-    <script>
-      const ctxs = [
-        document.getElementById('canvas1').getContext('2d'),
-        document.getElementById('canvas2').getContext('2d'),
-        document.getElementById('canvas3').getContext('2d'),
-        document.getElementById('canvas4').getContext('2d'),
-        document.getElementById('canvas5').getContext('2d')
-      ];
+  <!-- ============================================================
+       OSCILLOSCOPE ANIMATION
+       ============================================================ -->
 
-      let time = 0;
+  <script>
+    const canvasElements = [
+      document.getElementById("canvas1"),
+      document.getElementById("canvas2"),
+      document.getElementById("canvas3"),
+      document.getElementById("canvas4"),
+      document.getElementById("canvas5")
+    ];
 
-      function drawGrid(ctx, width, height) {
-        ctx.strokeStyle = '#101722';
-        ctx.lineWidth = 1;
-        const stepX = width / 8;
-        const stepY = height / 4;
-        ctx.beginPath();
-        for (let x = 0; x <= width; x += stepX) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
-        for (let y = 0; y <= height; y += stepY) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
-        ctx.stroke();
+    const ctxs = canvasElements.map(canvas => canvas.getContext("2d"));
+
+    let time = 0;
+
+
+    function resizeCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+
+      /*
+       * Keep the canvas drawing aligned with its CSS size.
+       * Limit DPR to 2 so the animation remains lightweight.
+       */
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+
+      const targetWidth = Math.round(width * dpr);
+      const targetHeight = Math.round(height * dpr);
+
+      if (
+        canvas.width !== targetWidth ||
+        canvas.height !== targetHeight
+      ) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
       }
 
-      function animate() {
-        time += 0.04;
-        
-        ctxs.forEach((ctx, index) => {
-          const canvas = ctx.canvas;
-          const width = canvas.width = canvas.clientWidth || 300;
-          const height = canvas.height = canvas.clientHeight || 150;
-          const centerY = height / 2;
+      const ctx = canvas.getContext("2d");
 
-          ctx.fillStyle = 'rgba(5, 7, 10, 0.35)';
-          ctx.fillRect(0, 0, width, height);
-          drawGrid(ctx, width, height);
+      ctx.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+      );
 
-          ctx.lineWidth = 2;
-          ctx.beginPath();
+      return { width, height };
+    }
 
-          for (let x = 0; x < width; x++) {
-            let t = (x / width) * 4 * Math.PI + time;
-            let yVal = 0;
 
-            let s1 = Math.sin(t) * (height * 0.35);
-            let s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.3);
-            let s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.35);
-            let s4 = Math.sin(t * 4 + Math.cos(t)) * (height * 0.25);
+    function drawGrid(ctx, width, height) {
+      ctx.strokeStyle = "#17212d";
+      ctx.lineWidth = 1;
 
-            if (index === 0) {
-              yVal = s1; ctx.strokeStyle = '#00ffcc';
-            } else if (index === 1) {
-              yVal = s2; ctx.strokeStyle = '#ff3366';
-            } else if (index === 2) {
-              yVal = s3; ctx.strokeStyle = '#00ffaa';
-            } else if (index === 3) {
-              yVal = s4; ctx.strokeStyle = '#33ccff';
-            } else if (index === 4) {
-              yVal = 0;
-              if (document.getElementById('mix1').checked) yVal += s1 * 0.5;
-              if (document.getElementById('mix2').checked) yVal += s2 * 0.5;
-              if (document.getElementById('mix3').checked) yVal += s3 * 0.5;
-              if (document.getElementById('mix4').checked) yVal += s4 * 0.5;
-              ctx.strokeStyle = '#ffcc00';
+      const stepX = width / 8;
+      const stepY = height / 4;
+
+      ctx.beginPath();
+
+      for (let x = 0; x <= width; x += stepX) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+      }
+
+      for (let y = 0; y <= height; y += stepY) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+      }
+
+      ctx.stroke();
+    }
+
+
+    function animate() {
+      time += 0.04;
+
+      ctxs.forEach((ctx, index) => {
+
+        const canvas = ctx.canvas;
+
+        const {
+          width,
+          height
+        } = resizeCanvas(canvas);
+
+        const centerY = height / 2;
+
+
+        /*
+         * Phosphor-style fading background.
+         */
+        ctx.fillStyle = "rgba(5, 7, 10, 0.40)";
+        ctx.fillRect(0, 0, width, height);
+
+        drawGrid(ctx, width, height);
+
+
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+
+
+        for (let x = 0; x < width; x++) {
+
+          const t =
+            (x / width) * 4 * Math.PI +
+            time;
+
+
+          /* Base signals */
+
+          const s1 =
+            Math.sin(t) *
+            (height * 0.30);
+
+          const s2 =
+            (Math.sin(t * 2) > 0 ? 1 : -1) *
+            (height * 0.25);
+
+          const s3 =
+            (Math.asin(Math.sin(t)) *
+            (2 / Math.PI)) *
+            (height * 0.30);
+
+          const s4 =
+            Math.sin(t * 4 + Math.cos(t)) *
+            (height * 0.22);
+
+
+          let yVal;
+
+
+          if (index === 0) {
+
+            yVal = s1;
+            ctx.strokeStyle = "#00ffcc";
+
+          }
+          else if (index === 1) {
+
+            yVal = s2;
+            ctx.strokeStyle = "#ff3366";
+
+          }
+          else if (index === 2) {
+
+            yVal = s3;
+            ctx.strokeStyle = "#00ffaa";
+
+          }
+          else if (index === 3) {
+
+            yVal = s4;
+            ctx.strokeStyle = "#33ccff";
+
+          }
+          else {
+
+            /*
+             * Plot 5 = superposition output.
+             */
+            yVal = 0;
+
+            if (
+              document.getElementById("mix1").checked
+            ) {
+              yVal += s1 * 0.5;
             }
 
-            let drawY = centerY - yVal;
-            if (x === 0) ctx.moveTo(x, drawY);
-            else ctx.lineTo(x, drawY);
+            if (
+              document.getElementById("mix2").checked
+            ) {
+              yVal += s2 * 0.5;
+            }
+
+            if (
+              document.getElementById("mix3").checked
+            ) {
+              yVal += s3 * 0.5;
+            }
+
+            if (
+              document.getElementById("mix4").checked
+            ) {
+              yVal += s4 * 0.5;
+            }
+
+            ctx.strokeStyle = "#ffcc00";
           }
-          ctx.stroke();
-        });
 
-        requestAnimationFrame(animate);
-      }
 
-      animate();
-    </script>
-  </body>
+          const drawY =
+            centerY - yVal;
+
+
+          if (x === 0) {
+            ctx.moveTo(x, drawY);
+          }
+          else {
+            ctx.lineTo(x, drawY);
+          }
+        }
+
+
+        ctx.stroke();
+      });
+
+
+      requestAnimationFrame(animate);
+    }
+
+
+    animate();
+  </script>
+
+</body>
 </html>
