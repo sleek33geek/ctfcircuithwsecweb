@@ -5,54 +5,247 @@
     <title>My test page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style.css">
+    
+    <style>
+      /* Lock html/body for a professional app layout */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: #0b0f19;
+        color: #fff;
+        font-family: monospace;
+        overflow: hidden;
+      }
+
+      .page-layout {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      /* Top 2/3 of the screen */
+      .top-section {
+        height: 66.66vh;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-y: auto;
+      }
+
+      /* Bottom 1/3 of the screen */
+      .bottom-section {
+        height: 33.34vh;
+        background: #06090f;
+        border-top: 2px solid #1a2634;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 2 Columns */
+        grid-template-rows: repeat(3, 1fr);
+        gap: 6px;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+
+      /* Oscilloscope panel styling */
+      .scope-panel {
+        background: #05070a;
+        border: 1px solid #1e293b;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scope-header {
+        font-size: 10px;
+        color: #00ff88;
+        padding: 2px 6px;
+        background: rgba(0, 255, 136, 0.05);
+        border-bottom: 1px solid #1e293b;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      canvas {
+        width: 100%;
+        flex: 1;
+        display: block;
+      }
+
+      /* Calculator panel spanning the right bottom cell */
+      .calc-panel {
+        grid-column: 2;
+        grid-row: 3;
+        background: #090d16;
+        border: 1px solid #00ff88;
+        border-radius: 4px;
+        padding: 4px 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: 11px;
+        color: #00ff88;
+      }
+
+      .calc-panel label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 2px 0;
+        cursor: pointer;
+      }
+
+      .hidden { display: none; }
+    </style>
   </head>
+  
   <body>
-   
+    <div class="page-layout">
+      
+      <!-- TOP SECTION (Content / Links) -->
+      <div class="top-section">
+        <p>
+          <a href="encrypt.html" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; color: #00ff88;">
+            <img src="images/RTL_icon.png" alt="Verilog Icon" style="width: 24px; height: 24px; vertical-align: middle;">
+            <span>View Verilog Code</span>
+          </a>
+        </p>
 
-<p>
-  <a href="encrypt.html" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-  <img src="images/RTL_icon.png" alt="Verilog Icon" style="width: 24px; height: 24px; vertical-align: middle;">
-    <span>View Verilog Code</span>
-      </a>
-    </p>
-  
+        <div id="loading" class="hidden">
+          <span class="wave"></span>
+          <span class="wave"></span>
+          <span class="wave"></span>
+        </div>
+      </div>
 
-    <div id="loading" class="hidden">
-    <span class="wave"></span>
-    <span class="wave"></span>
-    <span class="wave"></span>
-    </div>
-  
-    <script>
-    setTimeout(() => {
-      document.getElementById("loading").classList.remove("hidden");
-    }, 120000); // 2 minutes
-  </script>
-
-    <div id="wave-grid" class="hidden">
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-      <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-    </div>
-
-    <script>
-      let timerStarted = false;
-    
-      document.addEventListener("click", () => {
-        if (timerStarted) return;
-    
-        timerStarted = true;
-    
-        setTimeout(() => {
-          document.getElementById("wave-grid").classList.remove("hidden");
-        }, 120000);
-      });
-    </script>
+      <!-- BOTTOM SECTION: 5 Oscilloscopes in 2 Columns + Calculator -->
+      <div class="bottom-section">
         
+        <!-- Plot 1 -->
+        <div class="scope-panel" style="grid-column: 1; grid-row: 1;">
+          <div class="scope-header"><span>CH 1: Sine Wave</span><span>1 kHz</span></div>
+          <canvas id="canvas1"></canvas>
+        </div>
+
+        <!-- Plot 2 -->
+        <div class="scope-panel" style="grid-column: 2; grid-row: 1;">
+          <div class="scope-header"><span>CH 2: Square Wave</span><span>500 Hz</span></div>
+          <canvas id="canvas2"></canvas>
+        </div>
+
+        <!-- Plot 3 -->
+        <div class="scope-panel" style="grid-column: 1; grid-row: 2;">
+          <div class="scope-header"><span>CH 3: Triangle Wave</span><span>250 Hz</span></div>
+          <canvas id="canvas3"></canvas>
+        </div>
+
+        <!-- Plot 4 -->
+        <div class="scope-panel" style="grid-column: 2; grid-row: 2;">
+          <div class="scope-header"><span>CH 4: High-Freq Noise/Sine</span><span>2 kHz</span></div>
+          <canvas id="canvas4"></canvas>
+        </div>
+
+        <!-- Plot 5 (Top left of bottom row) -->
+        <div class="scope-panel" style="grid-column: 1; grid-row: 3;">
+          <div class="scope-header"><span>CH 5: Superposition Output</span><span>MATH</span></div>
+          <canvas id="canvas5"></canvas>
+        </div>
+
+        <!-- Calculator Panel (Bottom right under plots 2 and 4) -->
+        <div class="calc-panel">
+          <strong>🎛️ Superposition Mixer</strong>
+          <div>
+            <label><input type="checkbox" id="mix1" checked> CH1</label>
+            <label><input type="checkbox" id="mix2" checked> CH2</label>
+            <label><input type="checkbox" id="mix3"> CH3</label>
+            <label><input type="checkbox" id="mix4"> CH4</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Script Logic for all 5 Scopes -->
+    <script>
+      // Setup contexts for all 5 canvases
+      const canvases = [1, 2, 3, 4, 5].map(id => document.getElementById('canvas5').parentElement.tagName ? document.getElementById('canvas' + id) : null);
+      const ctxs = [
+        document.getElementById('canvas1').getContext('2d'),
+        document.getElementById('canvas2').getContext('2d'),
+        document.getElementById('canvas3').getContext('2d'),
+        document.getElementById('canvas4').getContext('2d'),
+        document.getElementById('canvas5').getContext('2d')
+      ];
+
+      let time = 0;
+
+      function drawGrid(ctx, width, height) {
+        ctx.strokeStyle = '#101722';
+        ctx.lineWidth = 1;
+        const stepX = width / 8;
+        const stepY = height / 4;
+        ctx.beginPath();
+        for (let x = 0; x <= width; x += stepX) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
+        for (let y = 0; y <= height; y += stepY) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
+        ctx.stroke();
+      }
+
+      function animate() {
+        time += 0.04;
+        
+        ctxs.forEach((ctx, index) => {
+          const canvas = ctx.canvas;
+          const width = canvas.width = canvas.clientWidth || 300;
+          const height = canvas.height = canvas.clientHeight || 150;
+          const centerY = height / 2;
+
+          // Phosphor fade effect
+          ctx.fillStyle = 'rgba(5, 7, 10, 0.35)';
+          ctx.fillRect(0, 0, width, height);
+          drawGrid(ctx, width, height);
+
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+
+          for (let x = 0; x < width; x++) {
+            let t = (x / width) * 4 * Math.PI + time;
+            let yVal = 0;
+
+            // Generate individual base signals
+            let s1 = Math.sin(t) * (height * 0.35);
+            let s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.3); // Square
+            let s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.35); // Triangle
+            let s4 = Math.sin(t * 4 + Math.cos(t)) * (height * 0.25);
+
+            if (index === 0) {
+              yVal = s1; ctx.strokeStyle = '#00ffcc';
+            } else if (index === 1) {
+              yVal = s2; ctx.strokeStyle = '#ff3366';
+            } else if (index === 2) {
+              yVal = s3; ctx.strokeStyle = '#00ffaa';
+            } else if (index === 3) {
+              yVal = s4; ctx.strokeStyle = '#33ccff';
+            } else if (index === 4) {
+              // Plot 5: Superposition Calculator Mixer
+              yVal = 0;
+              if (document.getElementById('mix1').checked) yVal += s1 * 0.5;
+              if (document.getElementById('mix2').checked) yVal += s2 * 0.5;
+              if (document.getElementById('mix3').checked) yVal += s3 * 0.5;
+              if (document.getElementById('mix4').checked) yVal += s4 * 0.5;
+              ctx.strokeStyle = '#ffcc00'; // Gold neon output
+            }
+
+            let drawY = centerY - yVal;
+            if (x === 0) ctx.moveTo(x, drawY);
+            else ctx.lineTo(x, drawY);
+          }
+          ctx.stroke();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
   </body>
 </html>
