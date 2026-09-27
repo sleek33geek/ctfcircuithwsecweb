@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     
     <style>
-      /* Lock html/body for a professional app layout */
+      /* Lock html/body for app layout */
       html, body {
         height: 100%;
         margin: 0;
@@ -24,15 +24,16 @@
         height: 100vh;
       }
 
-      /* Top 2/3 of the screen */
+      /* Top 2/3 of the screen (holds your original content and background waves) */
       .top-section {
         height: 66.66vh;
         padding: 20px;
         box-sizing: border-box;
         overflow-y: auto;
+        position: relative;
       }
 
-      /* Bottom 1/3 of the screen */
+      /* Bottom 1/3 of the screen: 5 Oscilloscopes in 2 Columns + Calculator */
       .bottom-section {
         height: 33.34vh;
         background: #06090f;
@@ -102,7 +103,7 @@
   <body>
     <div class="page-layout">
       
-      <!-- TOP SECTION (Content / Links) -->
+      <!-- TOP SECTION (Restored original content and background elements) -->
       <div class="top-section">
         <p>
           <a href="encrypt.html" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px; color: #00ff88;">
@@ -115,6 +116,17 @@
           <span class="wave"></span>
           <span class="wave"></span>
           <span class="wave"></span>
+        </div>
+
+        <div id="wave-grid" class="hidden">
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+          <div class="wave-cell"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
         </div>
       </div>
 
@@ -165,10 +177,26 @@
       </div>
     </div>
 
-    <!-- Script Logic for all 5 Scopes -->
+    <!-- Your original scripts -->
     <script>
-      // Setup contexts for all 5 canvases
-      const canvases = [1, 2, 3, 4, 5].map(id => document.getElementById('canvas5').parentElement.tagName ? document.getElementById('canvas' + id) : null);
+      setTimeout(() => {
+        document.getElementById("loading").classList.remove("hidden");
+      }, 120000); // 2 minutes
+    </script>
+
+    <script>
+      let timerStarted = false;
+      document.addEventListener("click", () => {
+        if (timerStarted) return;
+        timerStarted = true;
+        setTimeout(() => {
+          document.getElementById("wave-grid").classList.remove("hidden");
+        }, 120000);
+      });
+    </script>
+
+    <!-- Oscilloscope Animation & Math Engine Script -->
+    <script>
       const ctxs = [
         document.getElementById('canvas1').getContext('2d'),
         document.getElementById('canvas2').getContext('2d'),
