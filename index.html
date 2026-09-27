@@ -53,8 +53,9 @@
 
       /* Oscilloscope panel styling */
       .scope-panel {
-        background: #05070a;
-        border: 1px solid #1e293b;
+        background: rgba(5, 7, 10, 0.82); /* 82% opacity dark background */
+        backdrop-filter: blur(3px);         /* Optional frosted-glass blur */
+        border: 1px solid rgba(0, 255, 136, 0.3); /* Glowing border */
         border-radius: 4px;
         display: flex;
         flex-direction: column;
@@ -79,19 +80,20 @@
       }
 
       /* Calculator panel spanning the right bottom cell */
-      .calc-panel {
-        grid-column: 2;
-        grid-row: 3;
-        background: #090d16;
-        border: 1px solid #00ff88;
-        border-radius: 4px;
-        padding: 4px 8px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        font-size: 11px;
-        color: #00ff88;
-      }
+    .calc-panel {
+      grid-column: 2;
+      grid-row: 3;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(3px);
+      border: 1px solid #00ff88;
+      border-radius: 4px;
+      padding: 4px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 11px;
+      color: #00ff88;
+    }
 
       .calc-panel label {
         display: inline-flex;
