@@ -69,10 +69,6 @@
        SIX MOVING OSCILLOSCOPE PLOTS
        ============================================================ */
 
-/* ============================================================
-       SIX MOVING OSCILLOSCOPE PLOTS
-       ============================================================ */
-
     .scope-panel {
       position: absolute;
 
@@ -92,7 +88,6 @@
       z-index: 10;
     }
 
-    /* Adjusted row positions to fit neatly inside the screen windows */
     #scope1 {
       left: 406px;
       top: 546px;
@@ -155,11 +150,7 @@
 
 
     /* ============================================================
-       SUPERPOSITION MIXER (Moved to Bottom Left under Image)
-       ============================================================ */
-
-/* ============================================================
-       SUPERPOSITION MIXER (Aligned under the image at bottom left)
+       SUPERPOSITION MIXER
        ============================================================ */
 
     .calc-panel {
@@ -184,17 +175,24 @@
       border-radius: 2px;
 
       color: #00ff88;
-      font-size: 10px;
+      font-size: 9px;
     }
 
     .calc-title {
-      margin-bottom: 3px;
+      margin-bottom: 2px;
       font-weight: bold;
+    }
+
+    .mix-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 2px;
     }
 
     .mix-controls {
       display: flex;
-      gap: 7px;
+      gap: 5px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -300,26 +298,42 @@
     <section class="calc-panel">
       <div class="calc-title">Superposition Mixer</div>
 
-      <div class="mix-controls">
-        <label>
-          <input type="checkbox" id="mix1" checked>
-          CH1
-        </label>
+      <!-- Channel 1 & 2 Controls -->
+      <div class="mix-row">
+        <div class="mix-controls">
+          <label><input type="checkbox" id="mix1" checked> CH1</label>
+          <select id="op1" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
+            <option value="add">+</option>
+            <option value="sub">-</option>
+          </select>
+        </div>
 
-        <label>
-          <input type="checkbox" id="mix2" checked>
-          CH2
-        </label>
+        <div class="mix-controls">
+          <label><input type="checkbox" id="mix2" checked> CH2</label>
+          <select id="op2" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
+            <option value="add">+</option>
+            <option value="sub">-</option>
+          </select>
+        </div>
+      </div>
 
-        <label>
-          <input type="checkbox" id="mix3">
-          CH3
-        </label>
+      <!-- Channel 3 & 4 Controls -->
+      <div class="mix-row">
+        <div class="mix-controls">
+          <label><input type="checkbox" id="mix3"> CH3</label>
+          <select id="op3" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
+            <option value="add">+</option>
+            <option value="sub">-</option>
+          </select>
+        </div>
 
-        <label>
-          <input type="checkbox" id="mix4">
-          CH4
-        </label>
+        <div class="mix-controls">
+          <label><input type="checkbox" id="mix4"> CH4</label>
+          <select id="op4" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
+            <option value="add">+</option>
+            <option value="sub">-</option>
+          </select>
+        </div>
       </div>
     </section>
 
@@ -478,20 +492,24 @@
             ctx.strokeStyle = "#33ccff";
           }
           else if (index === 4) {
-            /* Plot 5 = calculated superposition output */
+            /* Plot 5 = calculated superposition output with +/- handling */
             yVal = 0;
 
             if (document.getElementById("mix1").checked) {
-              yVal += s1 * 0.5;
+              let op = document.getElementById("op1").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s1 * 0.5);
             }
             if (document.getElementById("mix2").checked) {
-              yVal += s2 * 0.5;
+              let op = document.getElementById("op2").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s2 * 0.5);
             }
             if (document.getElementById("mix3").checked) {
-              yVal += s3 * 0.5;
+              let op = document.getElementById("op3").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s3 * 0.5);
             }
             if (document.getElementById("mix4").checked) {
-              yVal += s4 * 0.5;
+              let op = document.getElementById("op4").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s4 * 0.5);
             }
 
             ctx.strokeStyle = "#ffcc00";
