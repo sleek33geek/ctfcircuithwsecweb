@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +10,6 @@
       box-sizing: border-box;
     }
 
-    /*
-     * The old page used the chip background as the main GUI.
-     * Keep it as a scrollable 2-D page: if the complete GUI does
-     * not fit the browser window, the user can scroll horizontally
-     * and/or vertically to reach every edge.
-     */
     html,
     body {
       margin: 0;
@@ -32,13 +25,6 @@
       background: #111;
     }
 
-    /*
-     * This is the "map" containing the original GUI background.
-     *
-     * The supplied background is 524 x 403 px, so it is displayed
-     * at 2x size.  The GUI therefore has a stable 1048 x 806 px
-     * coordinate system.
-     */
     .gui-map {
       position: relative;
 
@@ -58,13 +44,6 @@
        LINKS ON THE ORIGINAL GUI
        ============================================================ */
 
-    /*
-     * Transparent clickable areas are placed over the existing
-     * buttons in the background image, so the original GUI artwork
-     * remains visible.
-     */
-
-    /* RTL icon -> encrypt.html */
     .link-encrypt {
       position: absolute;
       left: 22px;
@@ -75,7 +54,6 @@
       display: block;
     }
 
-    /* Block-diagram icon -> schematic_block_diagram.html */
     .link-schematic {
       position: absolute;
       left: 22px;
@@ -88,17 +66,8 @@
 
 
     /* ============================================================
-       FIVE MOVING OSCILLOSCOPE PLOTS
+       SIX MOVING OSCILLOSCOPE PLOTS
        ============================================================ */
-
-    /*
-     * The plots are NOT placed in a normal bottom-section grid.
-     *
-     * They are positioned directly on top of the five white/black
-     * oscilloscope windows already present in the background image.
-     *
-     * This is the plot layout from the previous working version.
-     */
 
     .scope-panel {
       position: absolute;
@@ -119,16 +88,10 @@
       z-index: 10;
     }
 
-    /*
-     * Five plot locations.
-     *
-     * The background GUI is 2x the supplied 524 x 403 image:
-     *
-     *   left plots  ~= x 406
-     *   right plots ~= x 766
-     *
-     *   rows ~= y 552, 634, 716
-     */
+    /* Column 1 (Left): x = 406px
+       Column 2 (Right): x = 766px
+       Rows: y = 552px, 634px, 716px */
+
     #scope1 {
       left: 406px;
       top: 552px;
@@ -151,6 +114,11 @@
 
     #scope5 {
       left: 406px;
+      top: 716px;
+    }
+
+    #scope6 {
+      left: 766px;
       top: 716px;
     }
 
@@ -186,20 +154,16 @@
 
 
     /* ============================================================
-       SUPERPOSITION MIXER
+       SUPERPOSITION MIXER (Moved to Bottom Left under Image)
        ============================================================ */
 
-    /*
-     * The mixer sits over the lower-right calculator area in the
-     * original GUI.
-     */
     .calc-panel {
       position: absolute;
 
-      left: 766px;
+      left: 20px;
       top: 716px;
 
-      width: 264px;
+      width: 350px;
       height: 72px;
 
       z-index: 11;
@@ -254,11 +218,7 @@
 
   <main class="gui-map">
 
-    <!-- ========================================================
-         LINKS
-         ======================================================== -->
-
-    <!-- Existing RTL button -> encrypt.html -->
+    <!-- LINKS -->
     <a
       class="link-encrypt"
       href="encrypt.html"
@@ -266,7 +226,6 @@
       title="View Verilog / RTL code">
     </a>
 
-    <!-- Existing block-diagram button -> schematic_block_diagram.html -->
     <a
       class="link-schematic"
       href="schematic_block_diagram.html"
@@ -275,9 +234,7 @@
     </a>
 
 
-    <!-- ========================================================
-         FIVE ANIMATED PLOTS
-         ======================================================== -->
+    <!-- SIX ANIMATED PLOTS -->
 
     <!-- Plot 1 -->
     <section class="scope-panel" id="scope1">
@@ -315,7 +272,7 @@
       <canvas class="scope-canvas" id="canvas4"></canvas>
     </section>
 
-    <!-- Plot 5 -->
+    <!-- Plot 5 (Calculated Plot at Bottom Left of Column Grid) -->
     <section class="scope-panel" id="scope5">
       <div class="scope-header">
         <span>CH 5: Superposition Output</span>
@@ -324,11 +281,17 @@
       <canvas class="scope-canvas" id="canvas5"></canvas>
     </section>
 
+    <!-- Plot 6 (Additional Moving Plot at Bottom Right of Column Grid) -->
+    <section class="scope-panel" id="scope6">
+      <div class="scope-header">
+        <span>CH 6: Modulation Signal</span>
+        <span>100 Hz</span>
+      </div>
+      <canvas class="scope-canvas" id="canvas6"></canvas>
+    </section>
 
-    <!-- ========================================================
-         MIXER
-         ======================================================== -->
 
+    <!-- MIXER (Positioned under the image at bottom left) -->
     <section class="calc-panel">
       <div class="calc-title">Superposition Mixer</div>
 
@@ -356,17 +319,13 @@
     </section>
 
 
-    <!-- Kept from the previous version -->
     <div id="loading" class="hidden"></div>
     <div id="wave-grid" class="hidden"></div>
 
   </main>
 
 
-  <!-- ============================================================
-       DELAYED GUI SCRIPTS FROM THE PREVIOUS VERSION
-       ============================================================ -->
-
+  <!-- DELAYED GUI SCRIPTS -->
   <script>
     setTimeout(() => {
       document.getElementById("loading").classList.remove("hidden");
@@ -388,17 +347,15 @@
   </script>
 
 
-  <!-- ============================================================
-       OSCILLOSCOPE ANIMATION
-       ============================================================ -->
-
+  <!-- OSCILLOSCOPE ANIMATION -->
   <script>
     const canvasElements = [
       document.getElementById("canvas1"),
       document.getElementById("canvas2"),
       document.getElementById("canvas3"),
       document.getElementById("canvas4"),
-      document.getElementById("canvas5")
+      document.getElementById("canvas5"),
+      document.getElementById("canvas6")
     ];
 
     const ctxs = canvasElements.map(canvas => canvas.getContext("2d"));
@@ -408,11 +365,6 @@
 
     function resizeCanvas(canvas) {
       const rect = canvas.getBoundingClientRect();
-
-      /*
-       * Keep the canvas drawing aligned with its CSS size.
-       * Limit DPR to 2 so the animation remains lightweight.
-       */
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       const width = Math.max(1, Math.round(rect.width));
@@ -481,19 +433,13 @@
 
         const centerY = height / 2;
 
-
-        /*
-         * Phosphor-style fading background.
-         */
         ctx.fillStyle = "rgba(5, 7, 10, 0.40)";
         ctx.fillRect(0, 0, width, height);
 
         drawGrid(ctx, width, height);
 
-
         ctx.lineWidth = 1.6;
         ctx.beginPath();
-
 
         for (let x = 0; x < width; x++) {
 
@@ -501,109 +447,70 @@
             (x / width) * 4 * Math.PI +
             time;
 
-
           /* Base signals */
-
-          const s1 =
-            Math.sin(t) *
-            (height * 0.30);
-
-          const s2 =
-            (Math.sin(t * 2) > 0 ? 1 : -1) *
-            (height * 0.25);
-
-          const s3 =
-            (Math.asin(Math.sin(t)) *
-            (2 / Math.PI)) *
-            (height * 0.30);
-
-          const s4 =
-            Math.sin(t * 4 + Math.cos(t)) *
-            (height * 0.22);
-
+          const s1 = Math.sin(t) * (height * 0.30);
+          const s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.25);
+          const s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.30);
+          const s4 = Math.sin(t * 4 + Math.cos(t)) * (height * 0.22);
+          const s6 = Math.sin(t * 0.5) * Math.cos(t * 3) * (height * 0.28);
 
           let yVal;
 
-
           if (index === 0) {
-
             yVal = s1;
             ctx.strokeStyle = "#00ffcc";
-
           }
           else if (index === 1) {
-
             yVal = s2;
             ctx.strokeStyle = "#ff3366";
-
           }
           else if (index === 2) {
-
             yVal = s3;
             ctx.strokeStyle = "#00ffaa";
-
           }
           else if (index === 3) {
-
             yVal = s4;
             ctx.strokeStyle = "#33ccff";
-
           }
-          else {
-
-            /*
-             * Plot 5 = superposition output.
-             */
+          else if (index === 4) {
+            /* Plot 5 = calculated superposition output */
             yVal = 0;
 
-            if (
-              document.getElementById("mix1").checked
-            ) {
+            if (document.getElementById("mix1").checked) {
               yVal += s1 * 0.5;
             }
-
-            if (
-              document.getElementById("mix2").checked
-            ) {
+            if (document.getElementById("mix2").checked) {
               yVal += s2 * 0.5;
             }
-
-            if (
-              document.getElementById("mix3").checked
-            ) {
+            if (document.getElementById("mix3").checked) {
               yVal += s3 * 0.5;
             }
-
-            if (
-              document.getElementById("mix4").checked
-            ) {
+            if (document.getElementById("mix4").checked) {
               yVal += s4 * 0.5;
             }
 
             ctx.strokeStyle = "#ffcc00";
           }
+          else if (index === 5) {
+            /* Plot 6 = additional moving plot */
+            yVal = s6;
+            ctx.strokeStyle = "#ff66cc";
+          }
 
-
-          const drawY =
-            centerY - yVal;
-
+          const drawY = centerY - yVal;
 
           if (x === 0) {
             ctx.moveTo(x, drawY);
-          }
-          else {
+          } else {
             ctx.lineTo(x, drawY);
           }
         }
 
-
         ctx.stroke();
       });
 
-
       requestAnimationFrame(animate);
     }
-
 
     animate();
   </script>
