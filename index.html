@@ -159,10 +159,10 @@
       position: absolute;
 
       left: 20px;
-      top: 682px;
+      top: 672px;
 
       width: 350px;
-      height: 72px;
+      height: 92px;
 
       z-index: 11;
 
@@ -337,6 +337,17 @@
           </select>
         </div>
       </div>
+
+      <!-- Channel 5 Control -->
+      <div class="mix-row">
+        <div class="mix-controls">
+          <label><input type="checkbox" id="mix5"> CH5</label>
+          <select id="op5" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
+            <option value="add">+</option>
+            <option value="sub">-</option>
+          </select>
+        </div>
+      </div>
     </section>
 
 
@@ -443,6 +454,8 @@
     function animate() {
       time += 0.04;
 
+      // To handle CH5 correctly when it relies on superposition outputs, 
+      // we calculate the base superposition value first.
       ctxs.forEach((ctx, index) => {
 
         const canvas = ctx.canvas;
@@ -494,7 +507,7 @@
             ctx.strokeStyle = "#33ccff";
           }
           else if (index === 4) {
-            /* Plot 5 = calculated superposition output with +/- handling */
+            /* Plot 5 = calculated superposition output with CH1-CH5 handling */
             yVal = 0;
 
             if (document.getElementById("mix1").checked) {
@@ -512,6 +525,16 @@
             if (document.getElementById("mix4").checked) {
               let op = document.getElementById("op4").value;
               yVal += (op === 'sub' ? -1 : 1) * (s4 * 0.5);
+            }
+            if (document.getElementById("mix5").checked) {
+              // If CH5 is selected to feed into itself or compound, we handle its active components
+              let op = document.getElementById("op5").value;
+              let ch5SubVal = 0;
+              if (document.getElementById("mix1").checked) ch5SubVal += (document.getElementById("op1").value === 'sub' ? -1 : 1) * (s1 * 0.5);
+              if (document.getElementById("mix2").checked) ch5SubVal += (document.getElementById("op2").value === 'sub' ? -1 : 1) * (s2 * 0.5);
+              if (document.getElementById("mix3").checked) ch5SubVal += (document.getElementById("op3").value === 'sub' ? -1 : 1) * (s3 * 0.5);
+              if (document.getElementById("mix4").checked) ch5SubVal += (document.getElementById("op4").value === 'sub' ? -1 : 1) * (s4 * 0.5);
+              yVal += (op === 'sub' ? -1 : 1) * ch5SubVal;
             }
 
             ctx.strokeStyle = "#ffcc00";
