@@ -24,6 +24,49 @@ body {
   display: none;
 }
 
+/* ============================================================
+   LINKS ON THE GUI (Encrypt, Schematic, Multimeter)
+   ============================================================ */
+
+.link-encrypt {
+  position: absolute;
+  left: 22px;
+  top: 44px;
+  width: 68px;
+  height: 54px;
+  z-index: 30;
+  display: block;
+}
+
+.link-schematic {
+  position: absolute;
+  left: 22px;
+  top: 126px;
+  width: 68px;
+  height: 54px;
+  z-index: 30;
+  display: block;
+}
+
+/* Multimeter button link positioning */
+.link-multimeter {
+  position: absolute;
+  left: 22px;
+  top: 210px;
+  width: 68px;
+  height: 54px;
+  z-index: 30;
+  display: block;
+  cursor: pointer;
+}
+
+/* Custom cursor state activated on body */
+body.custom-cursor, 
+body.custom-cursor * {
+  cursor: url('images/EMmeasure.png'), auto !important;
+}
+
+
 /* GRID overlay */
 #wave-grid {
   position: fixed;
