@@ -64,13 +64,23 @@
       display: block;
     }
 
-<!-- Multimeter button -> activates custom cursor -->
-    <a
-      class="link-multimeter"
-      id="multimeterBtn"
-      aria-label="Activate multimeter probe cursor"
-      title="Activate multimeter probe cursor">
-    </a>
+    /* Multimeter button link positioning */
+    .link-multimeter {
+      position: absolute;
+      left: 22px;
+      top: 210px;
+      width: 68px;
+      height: 54px;
+      z-index: 30;
+      display: block;
+      cursor: pointer;
+    }
+
+    /* Custom cursor state activated on body */
+    body.custom-cursor, 
+    body.custom-cursor * {
+      cursor: url('images/EMmeasure.png'), auto !important;
+    }
     
     /* ============================================================
        SIX MOVING OSCILLOSCOPE PLOTS
@@ -243,6 +253,14 @@
       href="schematic_block_diagram.html"
       aria-label="View schematic block diagram"
       title="View schematic block diagram">
+    </a>
+
+    <!-- Multimeter button -> activates custom cursor -->
+    <a
+      class="link-multimeter"
+      id="multimeterBtn"
+      aria-label="Activate multimeter probe cursor"
+      title="Activate multimeter probe cursor">
     </a>
 
 
@@ -461,8 +479,6 @@
     function animate() {
       time += 0.04;
 
-      // To handle CH5 correctly when it relies on superposition outputs, 
-      // we calculate the base superposition value first.
       ctxs.forEach((ctx, index) => {
 
         const canvas = ctx.canvas;
@@ -534,7 +550,6 @@
               yVal += (op === 'sub' ? -1 : 1) * (s4 * 0.5);
             }
             if (document.getElementById("mix5").checked) {
-              // If CH5 is selected to feed into itself or compound, we handle its active components
               let op = document.getElementById("op5").value;
               let ch5SubVal = 0;
               if (document.getElementById("mix1").checked) ch5SubVal += (document.getElementById("op1").value === 'sub' ? -1 : 1) * (s1 * 0.5);
@@ -570,7 +585,7 @@
     animate();
   </script>
 
-<!-- MULTIMETER CURSOR TOGGLE SCRIPT -->
+  <!-- MULTIMETER CURSOR TOGGLE SCRIPT -->
   <script>
     const multimeterBtn = document.getElementById("multimeterBtn");
     if (multimeterBtn) {
