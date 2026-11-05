@@ -64,7 +64,14 @@
       display: block;
     }
 
-
+<!-- Multimeter button -> activates custom cursor -->
+    <a
+      class="link-multimeter"
+      id="multimeterBtn"
+      aria-label="Activate multimeter probe cursor"
+      title="Activate multimeter probe cursor">
+    </a>
+    
     /* ============================================================
        SIX MOVING OSCILLOSCOPE PLOTS
        ============================================================ */
@@ -563,5 +570,16 @@
     animate();
   </script>
 
+<!-- MULTIMETER CURSOR TOGGLE SCRIPT -->
+  <script>
+    const multimeterBtn = document.getElementById("multimeterBtn");
+    if (multimeterBtn) {
+      multimeterBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.body.classList.toggle("custom-cursor");
+      });
+    }
+  </script>
+  
 </body>
 </html>
