@@ -77,6 +77,41 @@
     }
 
     /* ============================================================
+       16-DIGIT DIGITAL INPUT BOX (Top area next to the key)
+       ============================================================ */
+    .digital-input-wrapper {
+      position: absolute;
+      left: 412px;
+      top: 13px;
+      width: 225px;
+      height: 30px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+    }
+
+    .digital-input-field {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #00ffcc;
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 3.5px;
+      text-align: center;
+      text-shadow: 0 0 6px rgba(0, 255, 204, 0.7);
+    }
+
+    .digital-input-field::placeholder {
+      color: rgba(0, 255, 204, 0.25);
+      letter-spacing: 3.5px;
+    }
+
+
+    /* ============================================================
        PROBE BUTTON OVERLAYS (Probes A through E)
        ============================================================ */
     .link-probe {
@@ -98,11 +133,6 @@
     #probeBtnB {
       left: 366px;
       top: 604px;
-    }
-
-    #probeBtn1 { /* Plot #1 probe indicator at bottom left of scopes */
-      left: 366px;
-      top: 682px;
     }
 
     /* Column 2 Probes (Right side of scopes) */
@@ -318,6 +348,19 @@
       aria-label="Activate multimeter probe cursor"
       title="Activate multimeter probe cursor">
     </a>
+
+    <!-- 16-DIGIT DIGITAL INPUT FIELD NEXT TO KEY -->
+    <div class="digital-input-wrapper">
+      <input 
+        type="text" 
+        id="digitalInputKey" 
+        class="digital-input-field" 
+        maxlength="16" 
+        placeholder="0000000000000000" 
+        autocomplete="off" 
+        spellcheck="false"
+      />
+    </div>
 
     <!-- PROBE BUTTON OVERLAYS (Clicking switches to Probe A-E cursor) -->
     <a class="link-probe" id="probeBtnA" aria-label="Probe A" title="Activate Probe A cursor"></a>
@@ -688,6 +731,18 @@
       multimeterBtn.addEventListener("click", (e) => {
         e.preventDefault();
         setProbeCursor('custom-cursor');
+      });
+    }
+
+    // STRICT 16-DIGIT BINARY INPUT VALIDATION (0 and 1 only)
+    const digitalInput = document.getElementById('digitalInputKey');
+    if (digitalInput) {
+      digitalInput.addEventListener('input', (e) => {
+        let val = digitalInput.value.replace(/[^01]/g, '');
+        if (val.length > 16) {
+          val = val.slice(0, 16);
+        }
+        digitalInput.value = val;
       });
     }
   </script>
