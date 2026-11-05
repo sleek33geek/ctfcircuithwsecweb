@@ -76,11 +76,11 @@
       cursor: pointer;
     }
 
-    /* Custom cursor state activated on body */
-    body.custom-cursor, 
-    body.custom-cursor * {
-      cursor: url('images/EMmeasure.png'), auto !important;
-    }
+/* Custom cursor state activated on body with hotspot coordinates */
+body.custom-cursor, 
+body.custom-cursor * {
+  cursor: url('images/EMmeasure.png') 4 4, auto !important;
+}
     
     /* ============================================================
        SIX MOVING OSCILLOSCOPE PLOTS
