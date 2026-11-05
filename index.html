@@ -76,12 +76,68 @@
       cursor: pointer;
     }
 
-/* Custom cursor state activated on body with hotspot coordinates */
-body.custom-cursor, 
-body.custom-cursor * {
-  cursor: url('images/EMmeasure.png') 4 4, auto !important;
-}
-    
+    /* ============================================================
+       PROBE BUTTON OVERLAYS (Probes A through E)
+       ============================================================ */
+    .link-probe {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      z-index: 30;
+      display: block;
+      cursor: pointer;
+    }
+
+    /* Column 1 Probes (Left side of scopes) */
+    #probeBtnA {
+      left: 366px;
+      top: 526px;
+    }
+
+    #probeBtnB {
+      left: 366px;
+      top: 604px;
+    }
+
+    #probeBtn1 { /* Plot #1 probe indicator at bottom left of scopes */
+      left: 366px;
+      top: 682px;
+    }
+
+    /* Column 2 Probes (Right side of scopes) */
+    #probeBtnC {
+      left: 696px;
+      top: 526px;
+    }
+
+    #probeBtnD {
+      left: 696px;
+      top: 604px;
+    }
+
+    #probeBtnE {
+      left: 696px;
+      top: 682px;
+    }
+
+
+    /* ============================================================
+       CUSTOM CURSOR STATES (Hotspot 2 2 for 40x55 image dimensions)
+       ============================================================ */
+
+    body.custom-cursor, 
+    body.custom-cursor * {
+      cursor: url('images/EMmeasure.png') 4 4, auto !important;
+    }
+
+    body.cursor-probe-a, body.cursor-probe-a * { cursor: url('images/EM_measure_A.png') 2 2, auto !important; }
+    body.cursor-probe-b, body.cursor-probe-b * { cursor: url('images/EM_measure_B.png') 2 2, auto !important; }
+    body.cursor-probe-c, body.cursor-probe-c * { cursor: url('images/EM_measure_C.png') 2 2, auto !important; }
+    body.cursor-probe-d, body.cursor-probe-d * { cursor: url('images/EM_measure_D.png') 2 2, auto !important; }
+    body.cursor-probe-e, body.cursor-probe-e * { cursor: url('images/EM_measure_E.png') 2 2, auto !important; }
+
+
     /* ============================================================
        SIX MOVING OSCILLOSCOPE PLOTS
        ============================================================ */
@@ -121,7 +177,7 @@ body.custom-cursor * {
       top: 682px;
     }
 
-    /* Right Column Plots (Shifted more to the left) */
+    /* Right Column Plots */
     #scope2 {
       left: 736px;
       top: 526px;
@@ -255,13 +311,20 @@ body.custom-cursor * {
       title="View schematic block diagram">
     </a>
 
-    <!-- Multimeter button -> activates custom cursor -->
+    <!-- Multimeter button -> activates general custom cursor -->
     <a
       class="link-multimeter"
       id="multimeterBtn"
       aria-label="Activate multimeter probe cursor"
       title="Activate multimeter probe cursor">
     </a>
+
+    <!-- PROBE BUTTON OVERLAYS (Clicking switches to Probe A-E cursor) -->
+    <a class="link-probe" id="probeBtnA" aria-label="Probe A" title="Activate Probe A cursor"></a>
+    <a class="link-probe" id="probeBtnB" aria-label="Probe B" title="Activate Probe B cursor"></a>
+    <a class="link-probe" id="probeBtnC" aria-label="Probe C" title="Activate Probe C cursor"></a>
+    <a class="link-probe" id="probeBtnD" aria-label="Probe D" title="Activate Probe D cursor"></a>
+    <a class="link-probe" id="probeBtnE" aria-label="Probe E" title="Activate Probe E cursor"></a>
 
 
     <!-- SIX ANIMATED PLOTS -->
@@ -585,16 +648,49 @@ body.custom-cursor * {
     animate();
   </script>
 
-  <!-- MULTIMETER CURSOR TOGGLE SCRIPT -->
+  <!-- PROBE & MULTIMETER CURSOR SWITCHING SCRIPT -->
   <script>
+    function setProbeCursor(cursorClassName) {
+      const bodyClasses = document.body.classList;
+      const probeClasses = ['cursor-probe-a', 'cursor-probe-b', 'cursor-probe-c', 'cursor-probe-d', 'cursor-probe-e', 'custom-cursor'];
+      
+      const isActive = bodyClasses.contains(cursorClassName);
+
+      // Remove all active probe/custom cursor classes
+      probeClasses.forEach(cls => bodyClasses.remove(cls));
+
+      // Toggle off if clicked again, or activate if new
+      if (!isActive) {
+        bodyClasses.add(cursorClassName);
+      }
+    }
+
+    const probes = [
+      { id: 'probeBtnA', cls: 'cursor-probe-a' },
+      { id: 'probeBtnB', cls: 'cursor-probe-b' },
+      { id: 'probeBtnC', cls: 'cursor-probe-c' },
+      { id: 'probeBtnD', cls: 'cursor-probe-d' },
+      { id: 'probeBtnE', cls: 'cursor-probe-e' }
+    ];
+
+    probes.forEach(probe => {
+      const btn = document.getElementById(probe.id);
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          setProbeCursor(probe.cls);
+        });
+      }
+    });
+
     const multimeterBtn = document.getElementById("multimeterBtn");
     if (multimeterBtn) {
       multimeterBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        document.body.classList.toggle("custom-cursor");
+        setProbeCursor('custom-cursor');
       });
     }
   </script>
-  
+
 </body>
 </html>
