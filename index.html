@@ -77,13 +77,13 @@
     }
 
     /* ============================================================
-       16-DIGIT DIGITAL INPUT BOX (Top area next to the key)
+       16-DIGIT DIGITAL INPUT BOX (Shifted right & sized for 16 zeros)
        ============================================================ */
     .digital-input-wrapper {
       position: absolute;
-      left: 412px;
+      left: 418px;
       top: 13px;
-      width: 225px;
+      width: 232px;
       height: 30px;
       z-index: 30;
       display: flex;
@@ -98,16 +98,16 @@
       outline: none;
       color: #00ffcc;
       font-family: monospace;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: bold;
-      letter-spacing: 3.5px;
+      letter-spacing: 2.8px;
       text-align: center;
       text-shadow: 0 0 6px rgba(0, 255, 204, 0.7);
     }
 
     .digital-input-field::placeholder {
       color: rgba(0, 255, 204, 0.25);
-      letter-spacing: 3.5px;
+      letter-spacing: 2.8px;
     }
 
 
@@ -483,269 +483,3 @@
 
 
     <div id="loading" class="hidden"></div>
-    <div id="wave-grid" class="hidden"></div>
-
-  </main>
-
-
-  <!-- DELAYED GUI SCRIPTS -->
-  <script>
-    setTimeout(() => {
-      document.getElementById("loading").classList.remove("hidden");
-    }, 120000);
-  </script>
-
-  <script>
-    let timerStarted = false;
-
-    document.addEventListener("click", () => {
-      if (timerStarted) return;
-
-      timerStarted = true;
-
-      setTimeout(() => {
-        document.getElementById("wave-grid").classList.remove("hidden");
-      }, 120000);
-    });
-  </script>
-
-
-  <!-- OSCILLOSCOPE ANIMATION -->
-  <script>
-    const canvasElements = [
-      document.getElementById("canvas1"),
-      document.getElementById("canvas2"),
-      document.getElementById("canvas3"),
-      document.getElementById("canvas4"),
-      document.getElementById("canvas5"),
-      document.getElementById("canvas6")
-    ];
-
-    const ctxs = canvasElements.map(canvas => canvas.getContext("2d"));
-
-    let time = 0;
-
-
-    function resizeCanvas(canvas) {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-      const width = Math.max(1, Math.round(rect.width));
-      const height = Math.max(1, Math.round(rect.height));
-
-      const targetWidth = Math.round(width * dpr);
-      const targetHeight = Math.round(height * dpr);
-
-      if (
-        canvas.width !== targetWidth ||
-        canvas.height !== targetHeight
-      ) {
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-      }
-
-      const ctx = canvas.getContext("2d");
-
-      ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-      );
-
-      return { width, height };
-    }
-
-
-    function drawGrid(ctx, width, height) {
-      ctx.strokeStyle = "#17212d";
-      ctx.lineWidth = 1;
-
-      const stepX = width / 8;
-      const stepY = height / 4;
-
-      ctx.beginPath();
-
-      for (let x = 0; x <= width; x += stepX) {
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-      }
-
-      for (let y = 0; y <= height; y += stepY) {
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-      }
-
-      ctx.stroke();
-    }
-
-
-    function animate() {
-      time += 0.04;
-
-      ctxs.forEach((ctx, index) => {
-
-        const canvas = ctx.canvas;
-
-        const {
-          width,
-          height
-        } = resizeCanvas(canvas);
-
-        const centerY = height / 2;
-
-        ctx.fillStyle = "rgba(5, 7, 10, 0.40)";
-        ctx.fillRect(0, 0, width, height);
-
-        drawGrid(ctx, width, height);
-
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-
-        for (let x = 0; x < width; x++) {
-
-          const t =
-            (x / width) * 4 * Math.PI +
-            time;
-
-          /* Base signals */
-          const s1 = Math.sin(t) * (height * 0.30);
-          const s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.25);
-          const s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.30);
-          const s4 = Math.sin(t * 4 + Math.cos(t)) * (height * 0.22);
-          const s6 = Math.sin(t * 0.5) * Math.cos(t * 3) * (height * 0.28);
-
-          let yVal;
-
-          if (index === 0) {
-            yVal = s1;
-            ctx.strokeStyle = "#00ffcc";
-          }
-          else if (index === 1) {
-            yVal = s2;
-            ctx.strokeStyle = "#ff3366";
-          }
-          else if (index === 2) {
-            yVal = s3;
-            ctx.strokeStyle = "#00ffaa";
-          }
-          else if (index === 3) {
-            yVal = s4;
-            ctx.strokeStyle = "#33ccff";
-          }
-          else if (index === 4) {
-            /* Plot 5 = calculated superposition output with CH1-CH5 handling */
-            yVal = 0;
-
-            if (document.getElementById("mix1").checked) {
-              let op = document.getElementById("op1").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s1 * 0.5);
-            }
-            if (document.getElementById("mix2").checked) {
-              let op = document.getElementById("op2").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s2 * 0.5);
-            }
-            if (document.getElementById("mix3").checked) {
-              let op = document.getElementById("op3").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s3 * 0.5);
-            }
-            if (document.getElementById("mix4").checked) {
-              let op = document.getElementById("op4").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s4 * 0.5);
-            }
-            if (document.getElementById("mix5").checked) {
-              let op = document.getElementById("op5").value;
-              let ch5SubVal = 0;
-              if (document.getElementById("mix1").checked) ch5SubVal += (document.getElementById("op1").value === 'sub' ? -1 : 1) * (s1 * 0.5);
-              if (document.getElementById("mix2").checked) ch5SubVal += (document.getElementById("op2").value === 'sub' ? -1 : 1) * (s2 * 0.5);
-              if (document.getElementById("mix3").checked) ch5SubVal += (document.getElementById("op3").value === 'sub' ? -1 : 1) * (s3 * 0.5);
-              if (document.getElementById("mix4").checked) ch5SubVal += (document.getElementById("op4").value === 'sub' ? -1 : 1) * (s4 * 0.5);
-              yVal += (op === 'sub' ? -1 : 1) * ch5SubVal;
-            }
-
-            ctx.strokeStyle = "#ffcc00";
-          }
-          else if (index === 5) {
-            /* Plot 6 = additional moving plot */
-            yVal = s6;
-            ctx.strokeStyle = "#ff66cc";
-          }
-
-          const drawY = centerY - yVal;
-
-          if (x === 0) {
-            ctx.moveTo(x, drawY);
-          } else {
-            ctx.lineTo(x, drawY);
-          }
-        }
-
-        ctx.stroke();
-      });
-
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-  </script>
-
-  <!-- PROBE & MULTIMETER CURSOR SWITCHING SCRIPT -->
-  <script>
-    function setProbeCursor(cursorClassName) {
-      const bodyClasses = document.body.classList;
-      const probeClasses = ['cursor-probe-a', 'cursor-probe-b', 'cursor-probe-c', 'cursor-probe-d', 'cursor-probe-e', 'custom-cursor'];
-      
-      const isActive = bodyClasses.contains(cursorClassName);
-
-      // Remove all active probe/custom cursor classes
-      probeClasses.forEach(cls => bodyClasses.remove(cls));
-
-      // Toggle off if clicked again, or activate if new
-      if (!isActive) {
-        bodyClasses.add(cursorClassName);
-      }
-    }
-
-    const probes = [
-      { id: 'probeBtnA', cls: 'cursor-probe-a' },
-      { id: 'probeBtnB', cls: 'cursor-probe-b' },
-      { id: 'probeBtnC', cls: 'cursor-probe-c' },
-      { id: 'probeBtnD', cls: 'cursor-probe-d' },
-      { id: 'probeBtnE', cls: 'cursor-probe-e' }
-    ];
-
-    probes.forEach(probe => {
-      const btn = document.getElementById(probe.id);
-      if (btn) {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          setProbeCursor(probe.cls);
-        });
-      }
-    });
-
-    const multimeterBtn = document.getElementById("multimeterBtn");
-    if (multimeterBtn) {
-      multimeterBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        setProbeCursor('custom-cursor');
-      });
-    }
-
-    // STRICT 16-DIGIT BINARY INPUT VALIDATION (0 and 1 only)
-    const digitalInput = document.getElementById('digitalInputKey');
-    if (digitalInput) {
-      digitalInput.addEventListener('input', (e) => {
-        let val = digitalInput.value.replace(/[^01]/g, '');
-        if (val.length > 16) {
-          val = val.slice(0, 16);
-        }
-        digitalInput.value = val;
-      });
-    }
-  </script>
-
-</body>
-</html>
