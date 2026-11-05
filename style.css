@@ -60,12 +60,6 @@ body {
   cursor: pointer;
 }
 
-/* Custom cursor state activated on body */
-body.custom-cursor, 
-body.custom-cursor * {
-  cursor: url('images/EMmeasure.png'), auto !important;
-}
-
 
 /* GRID overlay */
 #wave-grid {
