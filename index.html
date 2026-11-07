@@ -76,21 +76,32 @@
       cursor: pointer;
     }
 
+    /* Matrix Calculator button link positioning */
+    .link-matrix {
+      position: absolute;
+      left: 22px;
+      top: 294px;
+      width: 68px;
+      height: 54px;
+      z-index: 30;
+      display: block;
+      cursor: pointer;
+    }
+
     /* ============================================================
        16-DIGIT DIGITAL INPUT BOX (Top area next to the key)
        ============================================================ */
-  .digital-input-wrapper {
-        position: absolute;
-        left: 418px; /* Shifted slightly right */
-        top: 24px;
-        width: 264px;
-        height: 38px;
-        z-index: 30;
-        display: flex;
-        align-items: center;
-      }
+    .digital-input-wrapper {
+      position: absolute;
+      left: 418px; /* Shifted slightly right */
+      top: 24px;
+      width: 264px;
+      height: 38px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+    }
 
-    
     .digital-input-field {
       width: 100%;
       height: 100%;
@@ -108,9 +119,9 @@
       text-shadow: 0 0 6px rgba(0, 255, 204, 0.7);
     }
 
-.digital-input-field::placeholder {
+    .digital-input-field::placeholder {
       color: rgba(0, 255, 204, 0.25);
-      letter-spacing: 2px; /* Matched to input field */
+      letter-spacing: 2px;
     }
 
 
@@ -352,6 +363,14 @@
       title="Activate multimeter probe cursor">
     </a>
 
+    <!-- Matrix Calculator button link -->
+    <a
+      class="link-matrix"
+      href="matrix_calculator.html"
+      aria-label="View Matrix Calculator"
+      title="View Matrix Calculator">
+    </a>
+
     <!-- 16-DIGIT DIGITAL INPUT FIELD NEXT TO KEY -->
     <div class="digital-input-wrapper">
       <input 
@@ -365,7 +384,7 @@
       />
     </div>
 
-    <!-- PROBE BUTTON OVERLAYS (Clicking switches to Probe A-E cursor) -->
+    <!-- PROBE BUTTON OVERLAYS (Probes A through E) -->
     <a class="link-probe" id="probeBtnA" aria-label="Probe A" title="Activate Probe A cursor"></a>
     <a class="link-probe" id="probeBtnB" aria-label="Probe B" title="Activate Probe B cursor"></a>
     <a class="link-probe" id="probeBtnC" aria-label="Probe C" title="Activate Probe C cursor"></a>
