@@ -76,11 +76,11 @@
       cursor: pointer;
     }
 
-    /* Matrix Calculator button link positioning */
+    /* Matrix Calculator button link positioning (adjusted to lower position) */
     .link-matrix {
       position: absolute;
       left: 22px;
-      top: 360px;
+      top: 350px;
       width: 68px;
       height: 54px;
       z-index: 30;
@@ -363,12 +363,14 @@
       title="Activate multimeter probe cursor">
     </a>
 
-    <!-- Matrix Calculator button link -->
+    <!-- Matrix Calculator button link (opens matrix calc and hint image simultaneously) -->
     <a
       class="link-matrix"
       href="https://matrixcalc.org/#%7B%7B1,0,0,0,0,0,0,0,0%7D,%7B0,1,0,0,0,0,0,0,0%7D,%7B0,0,1,0,0,0,0,0,0%7D,%7B0,0,0,1,0,0,0,0,0%7D,%7B0,0,0,0,1,0,0,0,0%7D,%7B0,0,0,0,1,1,0,0,0%7D,%7B0,0,0,0,0,0,1,0,0%7D,%7B0,0,0,0,0,0,0,1,0%7D,%7B0,0,0,0,0,0,0,0,1%7D%7D*%7B%7B2%7D,%7B3%7D,%7B4%7D,%7B5%7D,%7B6%7D,%7B7%7D,%7B8%7D,%7B1%7D,%7B1%7D%7D"
-      aria-label="View Matrix Calculator"
-      title="View Matrix Calculator">
+      target="_blank"
+      onclick="window.open('images/matrix_hint_calc.png', '_blank');"
+      aria-label="View Matrix Calculator and Hint"
+      title="View Matrix Calculator and Hint">
     </a>
 
     <!-- 16-DIGIT DIGITAL INPUT FIELD NEXT TO KEY -->
