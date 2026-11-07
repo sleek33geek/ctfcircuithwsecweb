@@ -1,168 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypt Module - Verilog Code</title>
-    <!-- Prism.js CSS for Code Highlighting (Tomorrow Night Eighties Theme) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <head>
+    <meta charset="utf-8">
+    <title>Encrypt Verilog Module</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1 { color: #2c3e50; }
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            background: #3498db;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .back-btn:hover { background: #2980b9; }
-        pre {
-            border-radius: 6px;
-            padding: 20px !important;
-            font-size: 14px;
-        }
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0d1117;
+        color: #c9d1d9;
+        font-family: 'Fira Code', Consolas, Monaco, monospace;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+      .header {
+        background: #21262d;
+        padding: 12px 16px;
+        border-bottom: 1px solid #30363d;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+      }
+      pre {
+        margin: 0;
+        padding: 20px;
+        overflow-x: auto;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      code {
+        font-family: inherit;
+      }
+      .keyword { color: #ff7b72; }
+      .type { color: #79c0ff; }
+      .number { color: #a5d6ff; }
+      .comment { color: #8b949e; font-style: italic; }
     </style>
-</head>
-<body>
-
-<div class="container">
-    <a href="index.html" class="back-btn">&#8592; Back to Home</a>
-    <h1>Encrypt Module (SystemVerilog)</h1>
-    <p>Below is the hardware implementation of the 8-block parallel encrypter:</p>
-
-    <!-- Code Block with Verilog Highlighting -->
-    <pre><code class="language-verilog">
-module encrypt (
-    input  logic        clk,
-    input  logic        rst,
-    input  logic        en,
-    input  logic [63:0] plaintext,  // message for encryption (64 bits)
-    input  logic [7:0]  key,        // Cryptographic key
-
-    output logic [63:0] ciphertext  // encrypted message (64 bits)
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <span>encrypt.sv (Verilog Implementation)</span>
+        <span style="color: #8b949e; font-size: 12px;">SystemVerilog Multi-Cipher Block</span>
+      </div>
+      <pre><code><span class="keyword">module</span> encrypt (
+    <span class="type">input</span>  <span class="type">logic</span>         clk,
+    <span class="type">input</span>  <span class="type">logic</span>         rst,
+    <span class="type">input</span>  <span class="type">logic</span>         en,
+    <span class="type">input</span>  <span class="type">logic</span> [<span class="number">1023</span>:<span class="number">0</span>] plaintext,  <span class="comment">// message for encryption (64 bits)</span>
+    <span class="type">input</span>  <span class="type">logic</span> [<span class="number">1023</span>:<span class="number">0</span>] key,       <span class="comment">// Cryptographic key</span>
+ 
+    <span class="type">output</span> <span class="type">logic</span> [<span class="number">1023</span>:<span class="number">0</span>] ciphertext  <span class="comment">// encrypted message (64 bits)</span>
 );
-
-    genvar i;
-
-// 8 Identical Modules of Encryption
-    generate
-        for (i = 0; i < 8; i++) begin : GEN_ENCRYPT_BLOCK
-
-            // Signal Definition
-            logic [1:0] k2k1;
-
-            logic en_AES_i;
-            logic en_Scrambler_i;
-            logic en_otherthing_i;
-
-            logic [7:0] out_AES_i;
-            logic [7:0] out_Scrambler_i;
-            logic [7:0] out_otherthing_i;
-
-
-            // Local 2-bit key
-            if (i == 7) begin
-                assign k2k1 = {key[0], key[7]};
-            end
-            else begin
-                assign k2k1 = {key[i+1], key[i]};
-            end
-
-
-            // Encryption block enables
-            always_comb begin
-                // default Assignment
-                en_AES_i        = 1'b0;
-                en_Scrambler_i  = 1'b0;
-                en_otherthing_i = 1'b0;
+ 
+    <span class="keyword">genvar</span> i;
+ 
+    <span class="type">logic</span> [<span class="number">15</span>:<span class="number">0</span>] enc_key = key [<span class="number">15</span>:<span class="number">0</span>];
+ 
+<span class="comment">// 8 Identical Modules of Encryption</span>
+    <span class="keyword">generate</span>
+        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) <span class="keyword">begin</span> : GEN_ENCRYPT_BLOCK
+ 
+            <span class="comment">// Signal Definition</span>
+            <span class="type">logic</span> [<span class="number">1</span>:<span class="number">0</span>] k2k1;
+ 
+            <span class="type">logic</span> en_AES;
+            <span class="type">logic</span> en_Twofish;
+            <span class="type">logic</span> en_Skinny;
+            <span class="type">logic</span> en_Midori;
+ 
+            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_AES;
+            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_Twofish;
+            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_Skinny;
+            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_Midori;
+ 
+            <span class="comment">// Local 2-bit key</span>
+            <span class="keyword">assign</span> k2k1 = {key[<span class="number">2</span>*i+<span class="number">1</span>], key[<span class="number">2</span>*i]};
+ 
+            <span class="comment">// Encryption block enables</span>
+            <span class="keyword">always_comb</span> <span class="keyword">begin</span>
+                <span class="comment">// default Assignment</span>
+                en_AES     = <span class="number">1'b0</span>;
+                en_Twofish = <span class="number">1'b0</span>;
+                en_Skinny  = <span class="number">1'b0</span>;
+                en_Midori  = <span class="number">1'b0</span>;
                 
-                // en - block activation assignment
-                case (k2k1)
-                    2'b00: en_AES_i        = en;
-                    2'b01: en_Scrambler_i  = en;
-                    2'b10: en_otherthing_i = en;
-                    default: begin
-                     // 2'b11 -> no encryption block enabled
-                    end
-                endcase
-            end
-
-
-            // Encryption modules
-            /*Start of Encryption module instantiation section*/
-
-            // AES
+                <span class="comment">// en - block activation assignment</span>
+                <span class="keyword">case</span> (k2k1)
+                    <span class="number">2'b00</span>:   en_AES     = en;
+                    <span class="number">2'b01</span>:   en_Twofish = en;
+                    <span class="number">2'b10</span>:   en_Skinny  = en;
+                    <span class="number">2'b11</span>:   en_Midori  = en;
+                    <span class="keyword">default</span>: ;
+                <span class="keyword">endcase</span>
+            <span class="keyword">end</span>
+ 
+            <span class="comment">// Encryption modules</span>
+            <span class="comment">/*Start of Encryption module instantiation section*/</span>
+ 
+            <span class="comment">// AES</span>
             enc_AES u_enc_AES (
                 .clk     (clk),
                 .rst     (rst),
-                .en      (en_AES_i),
-                .ptxt    (plaintext[i*8 +: 8]),
+                .en      (en_AES),
+                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
                 .key     (k2k1),
-                .cphrtxt (out_AES_i)
+                .cphrtxt (out_AES)
             );
             
-            // Scrambler
-            enc_Scrambler u_enc_Scrambler (
+            <span class="comment">// Twofish</span>
+            enc_Twofish u_enc_Twofish (
                 .clk     (clk),
                 .rst     (rst),
-                .en      (en_Scrambler_i),
-                .ptxt    (plaintext[i*8 +: 8]),
+                .en      (en_Twofish),
+                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
                 .key     (k2k1),
-                .cphrtxt (out_Scrambler_i)
+                .cphrtxt (out_Twofish)
             );
-
-            //otherthing
-            enc_otherthing u_enc_otherthing (
+ 
+            <span class="comment">// Skinny</span>
+            enc_Skinny u_enc_Skinny (
                 .clk     (clk),
                 .rst     (rst),
-                .en      (en_otherthing_i),
-                .ptxt    (plaintext[i*8 +: 8]),
+                .en      (en_Skinny),
+                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
                 .key     (k2k1),
-                .cphrtxt (out_otherthing_i)
+                .cphrtxt (out_Skinny)
             );
-            /*End of Encryption module instantiation section*/
-
-
-            // Ciphertext Composition
-            always_comb begin
-                case (k2k1)
-                    2'b00:    ciphertext[i*8 +: 8] = out_AES_i;
-                    2'b01:    ciphertext[i*8 +: 8] = out_Scrambler_i;
-                    2'b10:    ciphertext[i*8 +: 8] = out_otherthing_i;
-                    default:  ciphertext[i*8 +: 8] = 8'b0;
-                endcase
-            end
-
-        end
-    endgenerate
-
-endmodule
-    </code></pre>
-</div>
-
-<!-- Prism.js JavaScript Library -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<!-- Prism Component for Verilog support -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-verilog.min.js"></script>
-
-</body>
+ 
+            <span class="comment">// Midori</span>
+            enc_Midori u_enc_Midori (
+                .clk     (clk),
+                .rst     (rst),
+                .en      (en_Midori),
+                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
+                .key     (k2k1),
+                .cphrtxt (out_Midori)
+            );
+ 
+            <span class="comment">/*End of Encryption module instantiation section*/</span>
+ 
+            <span class="comment">// Ciphertext Composition</span>
+            <span class="keyword">always_comb</span> <span class="keyword">begin</span>
+                <span class="keyword">case</span> (k2k1)
+                    <span class="number">2'b00</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_AES;
+                    <span class="number">2'b01</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_Twofish;
+                    <span class="number">2'b10</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_Skinny;
+                    <span class="number">2'b11</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_Midori;
+ 
+                    <span class="keyword">default</span>: ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = <span class="number">128'b0</span>;
+                <span class="keyword">endcase</span>
+            <span class="keyword">end</span>
+ 
+        <span class="keyword">end</span>
+    <span class="keyword">endgenerate</span>
+ 
+<span class="keyword">endmodule</span></code></pre>
+    </div>
+  </body>
 </html>
