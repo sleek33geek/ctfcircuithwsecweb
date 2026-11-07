@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8">
-    <title>Encrypt Verilog Module</title>
+    <title>Schematic Block Diagram</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       html, body {
@@ -10,164 +10,25 @@
         padding: 0;
         width: 100%;
         height: 100%;
-        background-color: #0d1117;
-        color: #c9d1d9;
-        font-family: 'Fira Code', Consolas, Monaco, monospace;
+        /* Ensures the background doesn't create unexpected scrollbars */
+        overflow: hidden; 
       }
-      .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        background: #161b22;
-        border: 1px solid #30363d;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+
+      body {
+        /* Points to your root images/ folder */
+        background-image: url('images/schematic_block_diagram.drawio.png'); 
+        /* Centers the image perfectly */
+        background-position: center center; 
+        /* Prevents the image from repeating like a tile */
+        background-repeat: no-repeat; 
+        /* Scales the image dynamically to cover the whole screen */
+        background-size: contain; 
+        /* Optional fallback color in case the image fails to load */
+        background-color: #ffffff; 
       }
-      .header {
-        background: #21262d;
-        padding: 12px 16px;
-        border-bottom: 1px solid #30363d;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-      }
-      pre {
-        margin: 0;
-        padding: 20px;
-        overflow-x: auto;
-        font-size: 13px;
-        line-height: 1.6;
-      }
-      code {
-        font-family: inherit;
-      }
-      .keyword { color: #ff7b72; }
-      .type { color: #79c0ff; }
-      .number { color: #a5d6ff; }
-      .comment { color: #8b949e; font-style: italic; }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="header">
-        <span>encrypt.sv (Verilog Implementation)</span>
-        <span style="color: #8b949e; font-size: 12px;">SystemVerilog Multi-Cipher Block</span>
-      </div>
-      <pre><code><span class="keyword">module</span> encrypt (
-    <span class="type">input</span>  <span class="type">logic</span>         clk,
-    <span class="type">input</span>  <span class="type">logic</span>         rst,
-    <span class="type">input</span>  <span class="type">logic</span>         en,
-    <span class="type">input</span>  <span class="type">logic</span> [<span class="number">1023</span>:<span class="number">0</span>] plaintext,  <span class="comment">// message for encryption (64 bits)</span>
-    <span class="type">input</span>  <span class="type">logic</span> [<span class="number">1023</span>:<span class="number">0</span>] key,       <span class="comment">// Cryptographic key</span>
- 
-    <span class="type">output</span> <span class="type">logic</span> [<span class="number">1023</span>:<span class="number">0</span>] ciphertext  <span class="comment">// encrypted message (64 bits)</span>
-);
- 
-    <span class="keyword">genvar</span> i;
- 
-    <span class="type">logic</span> [<span class="number">15</span>:<span class="number">0</span>] enc_key = key [<span class="number">15</span>:<span class="number">0</span>];
- 
-<span class="comment">// 8 Identical Modules of Encryption</span>
-    <span class="keyword">generate</span>
-        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; <span class="number">8</span>; i++) <span class="keyword">begin</span> : GEN_ENCRYPT_BLOCK
- 
-            <span class="comment">// Signal Definition</span>
-            <span class="type">logic</span> [<span class="number">1</span>:<span class="number">0</span>] k2k1;
- 
-            <span class="type">logic</span> en_AES;
-            <span class="type">logic</span> en_Twofish;
-            <span class="type">logic</span> en_Skinny;
-            <span class="type">logic</span> en_Midori;
- 
-            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_AES;
-            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_Twofish;
-            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_Skinny;
-            <span class="type">logic</span> [<span class="number">127</span>:<span class="number">0</span>] out_Midori;
- 
-            <span class="comment">// Local 2-bit key</span>
-            <span class="keyword">assign</span> k2k1 = {key[<span class="number">2</span>*i+<span class="number">1</span>], key[<span class="number">2</span>*i]};
- 
-            <span class="comment">// Encryption block enables</span>
-            <span class="keyword">always_comb</span> <span class="keyword">begin</span>
-                <span class="comment">// default Assignment</span>
-                en_AES     = <span class="number">1'b0</span>;
-                en_Twofish = <span class="number">1'b0</span>;
-                en_Skinny  = <span class="number">1'b0</span>;
-                en_Midori  = <span class="number">1'b0</span>;
-                
-                <span class="comment">// en - block activation assignment</span>
-                <span class="keyword">case</span> (k2k1)
-                    <span class="number">2'b00</span>:   en_AES     = en;
-                    <span class="number">2'b01</span>:   en_Twofish = en;
-                    <span class="number">2'b10</span>:   en_Skinny  = en;
-                    <span class="number">2'b11</span>:   en_Midori  = en;
-                    <span class="keyword">default</span>: ;
-                <span class="keyword">endcase</span>
-            <span class="keyword">end</span>
- 
-            <span class="comment">// Encryption modules</span>
-            <span class="comment">/*Start of Encryption module instantiation section*/</span>
- 
-            <span class="comment">// AES</span>
-            enc_AES u_enc_AES (
-                .clk     (clk),
-                .rst     (rst),
-                .en      (en_AES),
-                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
-                .key     (k2k1),
-                .cphrtxt (out_AES)
-            );
-            
-            <span class="comment">// Twofish</span>
-            enc_Twofish u_enc_Twofish (
-                .clk     (clk),
-                .rst     (rst),
-                .en      (en_Twofish),
-                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
-                .key     (k2k1),
-                .cphrtxt (out_Twofish)
-            );
- 
-            <span class="comment">// Skinny</span>
-            enc_Skinny u_enc_Skinny (
-                .clk     (clk),
-                .rst     (rst),
-                .en      (en_Skinny),
-                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
-                .key     (k2k1),
-                .cphrtxt (out_Skinny)
-            );
- 
-            <span class="comment">// Midori</span>
-            enc_Midori u_enc_Midori (
-                .clk     (clk),
-                .rst     (rst),
-                .en      (en_Midori),
-                .ptxt    (plaintext[i*<span class="number">128</span> +: <span class="number">128</span>]),
-                .key     (k2k1),
-                .cphrtxt (out_Midori)
-            );
- 
-            <span class="comment">/*End of Encryption module instantiation section*/</span>
- 
-            <span class="comment">// Ciphertext Composition</span>
-            <span class="keyword">always_comb</span> <span class="keyword">begin</span>
-                <span class="keyword">case</span> (k2k1)
-                    <span class="number">2'b00</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_AES;
-                    <span class="number">2'b01</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_Twofish;
-                    <span class="number">2'b10</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_Skinny;
-                    <span class="number">2'b11</span>:   ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = out_Midori;
- 
-                    <span class="keyword">default</span>: ciphertext[i*<span class="number">128</span> +: <span class="number">128</span>] = <span class="number">128'b0</span>;
-                <span class="keyword">endcase</span>
-            <span class="keyword">end</span>
- 
-        <span class="keyword">end</span>
-    <span class="keyword">endgenerate</span>
- 
-<span class="keyword">endmodule</span></code></pre>
-    </div>
+    <!-- The page is left completely empty as requested to show only the background -->
   </body>
 </html>
