@@ -373,8 +373,8 @@
        ============================================================ */
     .identify-input-wrapper {
       position: absolute;
-      left: 254px;
-      top: 554px;
+      left: 38px;
+      top: 366px;
       width: 70px;
       height: 28px;
       z-index: 30;
@@ -403,8 +403,8 @@
 
     .pav-output-wrapper {
       position: absolute;
-      left: 254px;
-      top: 636px;
+      left: 38px;
+      top: 486px;
       width: 70px;
       height: 28px;
       z-index: 30;
@@ -789,3 +789,92 @@
               yVal += (op === 'sub' ? -1 : 1) * (s1 * 0.5);
             }
             if (document.getElementById("mix2").checked) {
+              let op = document.getElementById("op2").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s2 * 0.5);
+            }
+            if (document.getElementById("mix3").checked) {
+              let op = document.getElementById("op3").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s3 * 0.5);
+            }
+            if (document.getElementById("mix4").checked) {
+              let op = document.getElementById("op4").value;
+              yVal += (op === 'sub' ? -1 : 1) * (s4 * 0.5);
+            }
+            if (document.getElementById("mix5").checked) {
+              let op = document.getElementById("op5").value;
+              let ch5SubVal = 0;
+              if (document.getElementById("mix1").checked) ch5SubVal += (document.getElementById("op1").value === 'sub' ? -1 : 1) * (s1 * 0.5);
+              if (document.getElementById("mix2").checked) ch5SubVal += (document.getElementById("op2").value === 'sub' ? -1 : 1) * (s2 * 0.5);
+              if (document.getElementById("mix3").checked) ch5SubVal += (document.getElementById("op3").value === 'sub' ? -1 : 1) * (s3 * 0.5);
+              if (document.getElementById("mix4").checked) ch5SubVal += (document.getElementById("op4").value === 'sub' ? -1 : 1) * (s4 * 0.5);
+              yVal += (op === 'sub' ? -1 : 1) * ch5SubVal;
+            }
+            ctx.strokeStyle = "#ffcc00";
+          } else if (index === 5) { yVal = s6; ctx.strokeStyle = "#ff66cc"; }
+
+          const drawY = centerY - yVal;
+          if (x === 0) ctx.moveTo(x, drawY);
+          else ctx.lineTo(x, drawY);
+        }
+        ctx.stroke();
+      });
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  </script>
+
+  <!-- B_VECTOR CSV PARSER & CALCULATOR SCRIPT -->
+  <script>
+    let bVectorMap = new Map();
+
+    // 1. Fetch and parse B_vector.csv from traces/B_1/ directory matching the CSV index column
+    fetch('traces/B_1/B_vector.csv')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(csvText => {
+        const lines = csvText.trim().split('\n');
+        // Skip header row (index, B_value)
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(',');
+          if (cols.length >= 2) {
+            const csvIndex = parseInt(cols[0].trim(), 10);
+            const bVal = parseFloat(cols[1].trim());
+            if (!isNaN(csvIndex) && !isNaN(bVal)) {
+              bVectorMap.set(csvIndex, bVal);
+            }
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error loading B_vector.csv from traces/B_1/:', error);
+      });
+
+    // 2. Listen to input changes in the Identify Patterns field
+    const patternInput = document.getElementById('patternInput');
+    const pavOutputDisplay = document.getElementById('pavOutputDisplay');
+
+    patternInput.addEventListener('input', (e) => {
+      // Restrict input exclusively to digits 0-9
+      let val = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = val;
+
+      if (val !== '') {
+        const searchedIndex = parseInt(val, 10);
+        // Look up the exact matching index from the CSV
+        if (bVectorMap.has(searchedIndex)) {
+          pavOutputDisplay.textContent = bVectorMap.get(searchedIndex).toFixed(4);
+        } else {
+          pavOutputDisplay.textContent = 'N/A';
+        }
+      } else {
+        pavOutputDisplay.textContent = '---';
+      }
+    });
+  </script>
+
+</body>
+</html>
