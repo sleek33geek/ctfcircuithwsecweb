@@ -230,28 +230,31 @@
 
 
     /* ============================================================
-       CORRECTED DOWNWARD-SHIFTED 9 REGION OVERLAYS
+       CORRECTED CHIP MODULE REGION OVERLAYS (WITH VISUAL HELPER)
        ============================================================ */
     .purple-region {
       position: absolute;
       z-index: 28;
       cursor: pointer;
+      /* Visual guide: temporary translucent overlay to see the region hitboxes */
+      background: rgba(177, 94, 255, 0.25);
+      border: 1px dashed #b15eff;
     }
 
-    /* Bottom Row (Regions 1 - 4): Shifted down to start at pink line (top: 275px) */
-    #region1 { left: 152px; top: 275px; width: 202px; height: 140px; }
-    #region2 { left: 360px; top: 275px; width: 202px; height: 140px; }
-    #region3 { left: 568px; top: 275px; width: 202px; height: 140px; }
-    #region4 { left: 776px; top: 275px; width: 202px; height: 140px; }
+    /* Bottom Row (Regions 1 - 4): Lower chip module grid (top: 260px to 450px) */
+    #region1 { left: 135px; top: 260px; width: 220px; height: 190px; }
+    #region2 { left: 358px; top: 260px; width: 220px; height: 190px; }
+    #region3 { left: 580px; top: 260px; width: 220px; height: 190px; }
+    #region4 { left: 802px; top: 260px; width: 220px; height: 190px; }
 
-    /* Top Row (Regions 5 - 8): Shifted down between yellow and green lines */
-    #region5 { left: 152px; top: 130px; width: 202px; height: 145px; }
-    #region6 { left: 360px; top: 130px; width: 202px; height: 145px; }
-    #region7 { left: 568px; top: 130px; width: 202px; height: 145px; }
-    #region8 { left: 776px; top: 130px; width: 202px; height: 145px; }
+    /* Top Row (Regions 5 - 8): Upper chip module grid (top: 70px to 250px) */
+    #region5 { left: 135px; top: 70px; width: 220px; height: 180px; }
+    #region6 { left: 358px; top: 70px; width: 220px; height: 180px; }
+    #region7 { left: 580px; top: 70px; width: 220px; height: 180px; }
+    #region8 { left: 802px; top: 70px; width: 220px; height: 180px; }
 
-    /* Top Header Area (Region 9): Positioned right above the green line */
-    #region9 { left: 152px; top: 45px; width: 826px; height: 85px; }
+    /* Top Header Area (Region 9): Key banner top band (top: 5px to 65px) */
+    #region9 { left: 135px; top: 5px; width: 887px; height: 60px; }
 
 
     /* ============================================================
