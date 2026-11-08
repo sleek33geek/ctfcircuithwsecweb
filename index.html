@@ -76,7 +76,7 @@
       cursor: pointer;
     }
 
-    /* Matrix Calculator button link positioning (adjusted to lower position) */
+    /* Matrix Calculator button link positioning */
     .link-matrix {
       position: absolute;
       left: 22px;
@@ -93,7 +93,7 @@
        ============================================================ */
     .digital-input-wrapper {
       position: absolute;
-      left: 418px; /* Shifted slightly right */
+      left: 418px;
       top: 24px;
       width: 264px;
       height: 38px;
@@ -138,38 +138,16 @@
       cursor: pointer;
     }
 
-    /* Column 1 Probes (Left side of scopes) */
-    #probeBtnA {
-      left: 366px;
-      top: 526px;
-    }
-
-    #probeBtnB {
-      left: 366px;
-      top: 604px;
-    }
-
-    /* Column 2 Probes (Right side of scopes) */
-    #probeBtnC {
-      left: 696px;
-      top: 526px;
-    }
-
-    #probeBtnD {
-      left: 696px;
-      top: 604px;
-    }
-
-    #probeBtnE {
-      left: 696px;
-      top: 682px;
-    }
+    #probeBtnA { left: 366px; top: 526px; }
+    #probeBtnB { left: 366px; top: 604px; }
+    #probeBtnC { left: 696px; top: 526px; }
+    #probeBtnD { left: 696px; top: 604px; }
+    #probeBtnE { left: 696px; top: 682px; }
 
 
     /* ============================================================
-       CUSTOM CURSOR STATES (Hotspot 2 2 for 40x55 image dimensions)
+       CUSTOM CURSOR STATES
        ============================================================ */
-
     body.custom-cursor, 
     body.custom-cursor * {
       cursor: url('images/EMmeasure.png') 4 4, auto !important;
@@ -185,72 +163,36 @@
     /* ============================================================
        SIX MOVING OSCILLOSCOPE PLOTS
        ============================================================ */
-
     .scope-panel {
       position: absolute;
-
       width: 264px;
       height: 72px;
-
       background: rgba(5, 7, 10, 0.80);
-
       border: 1px solid rgba(0, 255, 136, 0.42);
       border-radius: 2px;
-
       display: flex;
       flex-direction: column;
-
       overflow: hidden;
-
       z-index: 10;
     }
 
-    /* Left Column Plots */
-    #scope1 {
-      left: 406px;
-      top: 526px;
-    }
-
-    #scope3 {
-      left: 406px;
-      top: 604px;
-    }
-
-    #scope5 {
-      left: 406px;
-      top: 682px;
-    }
-
-    /* Right Column Plots */
-    #scope2 {
-      left: 736px;
-      top: 526px;
-    }
-
-    #scope4 {
-      left: 736px;
-      top: 604px;
-    }
-
-    #scope6 {
-      left: 736px;
-      top: 682px;
-    }
+    #scope1 { left: 406px; top: 526px; }
+    #scope3 { left: 406px; top: 604px; }
+    #scope5 { left: 406px; top: 682px; }
+    #scope2 { left: 736px; top: 526px; }
+    #scope4 { left: 736px; top: 604px; }
+    #scope6 { left: 736px; top: 682px; }
     
     .scope-header {
       height: 18px;
       min-height: 18px;
-
       padding: 1px 5px;
-
       display: flex;
       align-items: center;
       justify-content: space-between;
-
       color: #00ff88;
       font-size: 9px;
       line-height: 1;
-
       background: rgba(0, 255, 136, 0.07);
       border-bottom: 1px solid rgba(0, 255, 136, 0.20);
     }
@@ -271,28 +213,20 @@
     /* ============================================================
        SUPERPOSITION MIXER
        ============================================================ */
-
     .calc-panel {
       position: absolute;
-
       left: 20px;
       top: 672px;
-
       width: 350px;
       height: 92px;
-
       z-index: 11;
-
       display: flex;
       flex-direction: column;
       justify-content: center;
-
       padding: 4px 7px;
-
       background: rgba(9, 13, 22, 0.78);
       border: 1px solid rgba(0, 255, 136, 0.45);
       border-radius: 2px;
-
       color: #00ff88;
       font-size: 9px;
     }
@@ -368,28 +302,9 @@
       opacity: 0;
     }
 
-    .em-arc-1 {
-      width: 12px;
-      height: 6px;
-      bottom: 2px;
-      animation: arcFadeSequence 3s infinite;
-    }
-
-    .em-arc-2 {
-      width: 24px;
-      height: 12px;
-      bottom: 7px;
-      animation: arcFadeSequence 3s infinite;
-      animation-delay: 0.25s;
-    }
-
-    .em-arc-3 {
-      width: 36px;
-      height: 18px;
-      bottom: 12px;
-      animation: arcFadeSequence 3s infinite;
-      animation-delay: 0.5s;
-    }
+    .em-arc-1 { width: 12px; height: 6px; bottom: 2px; animation: arcFadeSequence 3s infinite; }
+    .em-arc-2 { width: 24px; height: 12px; bottom: 7px; animation: arcFadeSequence 3s infinite; animation-delay: 0.25s; }
+    .em-arc-3 { width: 36px; height: 18px; bottom: 12px; animation: arcFadeSequence 3s infinite; animation-delay: 0.5s; }
 
     @keyframes arcFadeSequence {
       0% { opacity: 0; transform: scale(0.8); }
@@ -403,7 +318,6 @@
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; }
     }
-
 
     .hidden {
       display: none;
@@ -430,7 +344,7 @@
       title="View schematic block diagram">
     </a>
 
-    <!-- Multimeter button -> activates general custom cursor -->
+    <!-- Multimeter button -->
     <a
       class="link-multimeter"
       id="multimeterBtn"
@@ -438,15 +352,17 @@
       title="Activate multimeter probe cursor">
     </a>
 
-    <!-- Matrix Calculator button link (opens matrix calc and hint image simultaneously via JS) -->
+    <!-- Matrix Calculator button link with href for right-click and onclick for hint image -->
     <a
       class="link-matrix"
-      id="matrixCalcBtn"
+      href="https://matrixcalc.org/#%7B%7B1,0,0,0,0,0,0,0,0%7D,%7B0,1,0,0,0,0,0,0,0%7D,%7B0,0,1,0,0,0,0,0,0%7D,%7B0,0,0,1,0,0,0,0,0%7D,%7B0,0,0,0,1,0,0,0,0%7D,%7B0,0,0,0,1,1,0,0,0%7D,%7B0,0,0,0,0,0,1,0,0%7D,%7B0,0,0,0,0,0,0,1,0%7D,%7B0,0,0,0,0,0,0,0,1%7D%7D*%7B%7B2%7D,%7B3%7D,%7B4%7D,%7B5%7D,%7B6%7D,%7B7%7D,%7B8%7D,%7B1%7D,%7B1%7D%7D"
+      target="_blank"
+      onclick="window.open('images/matrix_hint_calc.png', '_blank');"
       aria-label="View Matrix Calculator and Hint"
       title="View Matrix Calculator and Hint">
     </a>
 
-    <!-- 16-DIGIT DIGITAL INPUT FIELD NEXT TO KEY -->
+    <!-- 16-DIGIT DIGITAL INPUT FIELD -->
     <div class="digital-input-wrapper">
       <input 
         type="text" 
@@ -459,7 +375,7 @@
       />
     </div>
 
-    <!-- PROBE BUTTON OVERLAYS (Probes A through E) -->
+    <!-- PROBE BUTTON OVERLAYS -->
     <a class="link-probe" id="probeBtnA" aria-label="Probe A" title="Activate Probe A cursor"></a>
     <a class="link-probe" id="probeBtnB" aria-label="Probe B" title="Activate Probe B cursor"></a>
     <a class="link-probe" id="probeBtnC" aria-label="Probe C" title="Activate Probe C cursor"></a>
@@ -467,7 +383,7 @@
     <a class="link-probe" id="probeBtnE" aria-label="Probe E" title="Activate Probe E cursor"></a>
 
 
-    <!-- 8 EM LEAKAGE SIGNAL LOCATIONS ACROSS CHIP AREA -->
+    <!-- EM LEAKAGE SIGNAL LOCATIONS -->
     <div class="em-signal-spot" style="left: 320px; top: 120px;">
       <div class="em-arc em-arc-1"></div><div class="em-arc em-arc-2"></div><div class="em-arc em-arc-3"></div>
     </div>
@@ -495,111 +411,68 @@
 
 
     <!-- SIX ANIMATED PLOTS -->
-
-    <!-- Plot 1 -->
     <section class="scope-panel" id="scope1">
-      <div class="scope-header">
-        <span>CH 1: Sine Wave</span>
-        <span>1 kHz</span>
-      </div>
+      <div class="scope-header"><span>CH 1: Sine Wave</span><span>1 kHz</span></div>
       <canvas class="scope-canvas" id="canvas1"></canvas>
     </section>
-
-    <!-- Plot 2 -->
     <section class="scope-panel" id="scope2">
-      <div class="scope-header">
-        <span>CH 2: Square Wave</span>
-        <span>500 Hz</span>
-      </div>
+      <div class="scope-header"><span>CH 2: Square Wave</span><span>500 Hz</span></div>
       <canvas class="scope-canvas" id="canvas2"></canvas>
     </section>
-
-    <!-- Plot 3 -->
     <section class="scope-panel" id="scope3">
-      <div class="scope-header">
-        <span>CH 3: Triangle Wave</span>
-        <span>250 Hz</span>
-      </div>
+      <div class="scope-header"><span>CH 3: Triangle Wave</span><span>250 Hz</span></div>
       <canvas class="scope-canvas" id="canvas3"></canvas>
     </section>
-
-    <!-- Plot 4 -->
     <section class="scope-panel" id="scope4">
-      <div class="scope-header">
-        <span>CH 4: High-Freq Noise/Sine</span>
-        <span>2 kHz</span>
-      </div>
+      <div class="scope-header"><span>CH 4: High-Freq Noise/Sine</span><span>2 kHz</span></div>
       <canvas class="scope-canvas" id="canvas4"></canvas>
     </section>
-
-    <!-- Plot 5 (Calculated Plot at Bottom Left of Column Grid) -->
     <section class="scope-panel" id="scope5">
-      <div class="scope-header">
-        <span>CH 5: Superposition Output</span>
-        <span>MATH</span>
-      </div>
+      <div class="scope-header"><span>CH 5: Superposition Output</span><span>MATH</span></div>
       <canvas class="scope-canvas" id="canvas5"></canvas>
     </section>
-
-    <!-- Plot 6 (Additional Moving Plot at Bottom Right of Column Grid) -->
     <section class="scope-panel" id="scope6">
-      <div class="scope-header">
-        <span>CH 6: Modulation Signal</span>
-        <span>100 Hz</span>
-      </div>
+      <div class="scope-header"><span>CH 6: Modulation Signal</span><span>100 Hz</span></div>
       <canvas class="scope-canvas" id="canvas6"></canvas>
     </section>
 
 
-    <!-- MIXER (Positioned under the image at bottom left) -->
+    <!-- MIXER -->
     <section class="calc-panel">
       <div class="calc-title">Superposition Mixer</div>
-
-      <!-- Channel 1 & 2 Controls -->
       <div class="mix-row">
         <div class="mix-controls">
           <label><input type="checkbox" id="mix1" checked> CH1</label>
           <select id="op1" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
-            <option value="add">+</option>
-            <option value="sub">-</option>
+            <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
-
         <div class="mix-controls">
           <label><input type="checkbox" id="mix2" checked> CH2</label>
           <select id="op2" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
-            <option value="add">+</option>
-            <option value="sub">-</option>
+            <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
       </div>
-
-      <!-- Channel 3 & 4 Controls -->
       <div class="mix-row">
         <div class="mix-controls">
           <label><input type="checkbox" id="mix3"> CH3</label>
           <select id="op3" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
-            <option value="add">+</option>
-            <option value="sub">-</option>
+            <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
-
         <div class="mix-controls">
           <label><input type="checkbox" id="mix4"> CH4</label>
           <select id="op4" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
-            <option value="add">+</option>
-            <option value="sub">-</option>
+            <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
       </div>
-
-      <!-- Channel 5 Control -->
       <div class="mix-row">
         <div class="mix-controls">
           <label><input type="checkbox" id="mix5"> CH5</label>
           <select id="op5" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
-            <option value="add">+</option>
-            <option value="sub">-</option>
+            <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
       </div>
@@ -612,7 +485,7 @@
   </main>
 
 
-  <!-- DELAYED GUI SCRIPTS -->
+  <!-- SCRIPTS -->
   <script>
     setTimeout(() => {
       document.getElementById("loading").classList.remove("hidden");
@@ -621,19 +494,15 @@
 
   <script>
     let timerStarted = false;
-
     document.addEventListener("click", () => {
       if (timerStarted) return;
-
       timerStarted = true;
-
       setTimeout(() => {
         document.getElementById("wave-grid").classList.remove("hidden");
       }, 120000);
     });
   </script>
 
-  <!-- EM LEAKAGE 2-MINUTE TIMER -->
   <script>
     setTimeout(() => {
       document.body.classList.add("em-leakage-active");
@@ -653,95 +522,58 @@
     ];
 
     const ctxs = canvasElements.map(canvas => canvas.getContext("2d"));
-
     let time = 0;
-
 
     function resizeCanvas(canvas) {
       const rect = canvas.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
       const width = Math.max(1, Math.round(rect.width));
       const height = Math.max(1, Math.round(rect.height));
-
       const targetWidth = Math.round(width * dpr);
       const targetHeight = Math.round(height * dpr);
 
-      if (
-        canvas.width !== targetWidth ||
-        canvas.height !== targetHeight
-      ) {
+      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
         canvas.width = targetWidth;
         canvas.height = targetHeight;
       }
 
       const ctx = canvas.getContext("2d");
-
-      ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-      );
-
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       return { width, height };
     }
-
 
     function drawGrid(ctx, width, height) {
       ctx.strokeStyle = "#17212d";
       ctx.lineWidth = 1;
-
       const stepX = width / 8;
       const stepY = height / 4;
 
       ctx.beginPath();
-
       for (let x = 0; x <= width; x += stepX) {
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
+        ctx.moveTo(x, 0); ctx.lineTo(x, height);
       }
-
       for (let y = 0; y <= height; y += stepY) {
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
+        ctx.moveTo(0, y); ctx.lineTo(width, y);
       }
-
       ctx.stroke();
     }
 
-
     function animate() {
       time += 0.04;
-
       ctxs.forEach((ctx, index) => {
-
         const canvas = ctx.canvas;
-
-        const {
-          width,
-          height
-        } = resizeCanvas(canvas);
-
+        const { width, height } = resizeCanvas(canvas);
         const centerY = height / 2;
 
         ctx.fillStyle = "rgba(5, 7, 10, 0.40)";
         ctx.fillRect(0, 0, width, height);
-
         drawGrid(ctx, width, height);
 
         ctx.lineWidth = 1.6;
         ctx.beginPath();
 
         for (let x = 0; x < width; x++) {
-
-          const t =
-            (x / width) * 4 * Math.PI +
-            time;
-
-          /* Base signals */
+          const t = (x / width) * 4 * Math.PI + time;
           const s1 = Math.sin(t) * (height * 0.30);
           const s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.25);
           const s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.30);
@@ -749,27 +581,12 @@
           const s6 = Math.sin(t * 0.5) * Math.cos(t * 3) * (height * 0.28);
 
           let yVal;
-
-          if (index === 0) {
-            yVal = s1;
-            ctx.strokeStyle = "#00ffcc";
-          }
-          else if (index === 1) {
-            yVal = s2;
-            ctx.strokeStyle = "#ff3366";
-          }
-          else if (index === 2) {
-            yVal = s3;
-            ctx.strokeStyle = "#00ffaa";
-          }
-          else if (index === 3) {
-            yVal = s4;
-            ctx.strokeStyle = "#33ccff";
-          }
+          if (index === 0) { yVal = s1; ctx.strokeStyle = "#00ffcc"; }
+          else if (index === 1) { yVal = s2; ctx.strokeStyle = "#ff3366"; }
+          else if (index === 2) { yVal = s3; ctx.strokeStyle = "#00ffaa"; }
+          else if (index === 3) { yVal = s4; ctx.strokeStyle = "#33ccff"; }
           else if (index === 4) {
-            /* Plot 5 = calculated superposition output with CH1-CH5 handling */
             yVal = 0;
-
             if (document.getElementById("mix1").checked) {
               let op = document.getElementById("op1").value;
               yVal += (op === 'sub' ? -1 : 1) * (s1 * 0.5);
@@ -795,100 +612,4 @@
               if (document.getElementById("mix4").checked) ch5SubVal += (document.getElementById("op4").value === 'sub' ? -1 : 1) * (s4 * 0.5);
               yVal += (op === 'sub' ? -1 : 1) * ch5SubVal;
             }
-
-            ctx.strokeStyle = "#ffcc00";
-          }
-          else if (index === 5) {
-            /* Plot 6 = additional moving plot */
-            yVal = s6;
-            ctx.strokeStyle = "#ff66cc";
-          }
-
-          const drawY = centerY - yVal;
-
-          if (x === 0) {
-            ctx.moveTo(x, drawY);
-          } else {
-            ctx.lineTo(x, drawY);
-          }
-        }
-
-        ctx.stroke();
-      });
-
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-  </script>
-
-  <!-- PROBE & MULTIMETER CURSOR SWITCHING & MATRIX BUTTON HANDLER -->
-  <script>
-    function setProbeCursor(cursorClassName) {
-      const bodyClasses = document.body.classList;
-      const probeClasses = ['cursor-probe-a', 'cursor-probe-b', 'cursor-probe-c', 'cursor-probe-d', 'cursor-probe-e', 'custom-cursor'];
-      
-      const isActive = bodyClasses.contains(cursorClassName);
-
-      // Remove all active probe/custom cursor classes
-      probeClasses.forEach(cls => bodyClasses.remove(cls));
-
-      // Toggle off if clicked again, or activate if new
-      if (!isActive) {
-        bodyClasses.add(cursorClassName);
-      }
-    }
-
-    const probes = [
-      { id: 'probeBtnA', cls: 'cursor-probe-a' },
-      { id: 'probeBtnB', cls: 'cursor-probe-b' },
-      { id: 'probeBtnC', cls: 'cursor-probe-c' },
-      { id: 'probeBtnD', cls: 'cursor-probe-d' },
-      { id: 'probeBtnE', cls: 'cursor-probe-e' }
-    ];
-
-    probes.forEach(probe => {
-      const btn = document.getElementById(probe.id);
-      if (btn) {
-        btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          setProbeCursor(probe.cls);
-        });
-      }
-    });
-
-    const multimeterBtn = document.getElementById("multimeterBtn");
-    if (multimeterBtn) {
-      multimeterBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        setProbeCursor('custom-cursor');
-      });
-    }
-
-    // Matrix Calculator Button Click Handler (Opens Calculator & Hint image simultaneously)
-    const matrixCalcBtn = document.getElementById("matrixCalcBtn");
-    if (matrixCalcBtn) {
-      matrixCalcBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        // 1. Open the Matrix Calculator website in a new tab
-        window.open("https://matrixcalc.org/#%7B%7B1,0,0,0,0,0,0,0,0%7D,%7B0,1,0,0,0,0,0,0,0%7D,%7B0,0,1,0,0,0,0,0,0%7D,%7B0,0,0,1,0,0,0,0,0%7D,%7B0,0,0,0,1,0,0,0,0%7D,%7B0,0,0,0,1,1,0,0,0%7D,%7B0,0,0,0,0,0,1,0,0%7D,%7B0,0,0,0,0,0,0,1,0%7D,%7B0,0,0,0,0,0,0,0,1%7D%7D*%7B%7B2%7D,%7B3%7D,%7B4%7D,%7B5%7D,%7B6%7D,%7B7%7D,%7B8%7D,%7B1%7D,%7B1%7D%7D", "_blank");
-        // 2. Open the image hint in a separate new tab
-        window.open("images/matrix_hint_calc.png", "_blank");
-      });
-    }
-
-    // STRICT 16-DIGIT BINARY INPUT VALIDATION (0 and 1 only)
-    const digitalInput = document.getElementById('digitalInputKey');
-    if (digitalInput) {
-      digitalInput.addEventListener('input', (e) => {
-        let val = digitalInput.value.replace(/[^01]/g, '');
-        if (val.length > 16) {
-          val = val.slice(0, 16);
-        }
-        digitalInput.value = val;
-      });
-    }
-  </script>
-
-</body>
-</html>
+            ctx.strokeStyle = "#ffcc
