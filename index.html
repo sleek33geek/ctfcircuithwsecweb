@@ -740,5 +740,109 @@
     }
     requestAnimationFrame(animate);
   </script>
+
+<!-- MIXER -->
+    <section class="calc-panel">
+      <!-- (Your existing mixer HTML) -->
+    </section>
+
+    <div id="loading" class="hidden"></div>
+    <div id="wave-grid" class="hidden"></div>
+
+  </main>
+
+  <!-- ============================================================
+       1. HTML CONTAINERS FOR INPUT & OUTPUT (Add these here)
+       ============================================================ -->
+  <!-- Identify Patterns Input Box Overlay -->
+  <div class="identify-input-wrapper">
+    <input 
+      type="text" 
+      id="patternInput" 
+      class="pattern-input-field" 
+      maxlength="1" 
+      placeholder="0" 
+      autocomplete="off" 
+      spellcheck="false"
+    />
+  </div>
+
+  <!-- Pav Calculator Display Overlay -->
+  <div class="pav-output-wrapper">
+    <div id="pavOutputDisplay" class="pav-output-field">---</div>
+  </div>
+
+
+  <!-- ============================================================
+       2. EXISTING SCRIPTS (Multimeter & Oscilloscope)
+       ============================================================ -->
+  <!-- MULTIMETER & PROBE MEASUREMENT SELECTION SCRIPT -->
+  <script>
+    // ... (your existing multimeter code) ...
+  </script>
+
+  <!-- OSCILLOSCOPE ANIMATION -->
+  <script>
+    // ... (your existing oscilloscope code) ...
+  </script>
+
+
+  <!-- ============================================================
+       3. NEW B_VECTOR CSV PARSER & CALCULATOR SCRIPT
+       ============================================================ -->
+  <script>
+    let bVectorData = [];
+
+    // 1. Fetch and parse B_vector.csv from traces/B_1/ directory
+    fetch('traces/B_1/B_vector.csv')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(csvText => {
+        const lines = csvText.trim().split('\n');
+        // Skip header row (index, B_value)
+        for (let i = 1; i < lines.length; i++) {
+          const cols = lines[i].split(',');
+          if (cols.length >= 2) {
+            const val = parseFloat(cols[1].trim());
+            if (!isNaN(val)) {
+              bVectorData.push(val);
+            }
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error loading B_vector.csv from traces/B_1/:', error);
+      });
+
+    // 2. Listen to input changes in the Identify Patterns field
+    const patternInput = document.getElementById('patternInput');
+    const pavOutputDisplay = document.getElementById('pavOutputDisplay');
+
+    patternInput.addEventListener('input', (e) => {
+      // Restrict input exclusively to digits 0-9
+      let val = e.target.value.replace(/[^0-9]/g, '');
+      e.target.value = val;
+
+      if (val !== '') {
+        const parsedIndex = parseInt(val, 10);
+        // Row mapping: Input 2 -> index 2 (3rd data row in CSV)
+        if (parsedIndex >= 0 && parsedIndex < bVectorData.length) {
+          pavOutputDisplay.textContent = bVectorData[parsedIndex].toFixed(4);
+        } else {
+          pavOutputDisplay.textContent = 'N/A';
+        }
+      } else {
+        pavOutputDisplay.textContent = '---';
+      }
+    });
+  </script>
+
+</body>
+</html>
+  
 </body>
 </html>
