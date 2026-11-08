@@ -191,7 +191,7 @@
       align-items: center;
       justify-content: space-between;
       color: #00ff88;
-      font-size: 9px;
+      font-size: 8px;
       line-height: 1;
       background: rgba(0, 255, 136, 0.07);
       border-bottom: 1px solid rgba(0, 255, 136, 0.20);
@@ -238,19 +238,19 @@
       cursor: pointer;
     }
 
-    /* Bottom Row (Regions 1 - 4): Sits right above the blue panel covering lower chip row */
+    /* Bottom Row (Regions 1 - 4) */
     #region1 { left: 148px; top: 346px; width: 210px; height: 205px; }
     #region2 { left: 362px; top: 346px; width: 210px; height: 205px; }
     #region3 { left: 576px; top: 346px; width: 210px; height: 205px; }
     #region4 { left: 790px; top: 346px; width: 210px; height: 205px; }
 
-    /* Top Row (Regions 5 - 8): Covers upper chip module row */
+    /* Top Row (Regions 5 - 8) */
     #region5 { left: 148px; top: 138px; width: 210px; height: 205px; }
     #region6 { left: 362px; top: 138px; width: 210px; height: 205px; }
     #region7 { left: 576px; top: 138px; width: 210px; height: 205px; }
     #region8 { left: 790px; top: 138px; width: 210px; height: 205px; }
 
-    /* Top Header Area (Region 9): Positioned right above top row */
+    /* Top Header Area (Region 9) */
     #region9 { left: 148px; top: 74px; width: 852px; height: 60px; }
 
 
@@ -524,42 +524,42 @@
 
     <!-- SIX ANIMATED PLOTS -->
     <section class="scope-panel" id="scope1">
-      <div class="scope-header"><span>CH 1: Sine Wave</span><span>1 kHz</span></div>
+      <div class="scope-header"><span id="title1">CH 1: Sine Wave</span><span>max:0.249</span></div>
       <div class="scope-canvas-container">
         <canvas class="scope-canvas" id="canvas1"></canvas>
         <span class="plot-region-badge" id="badge1"></span>
       </div>
     </section>
     <section class="scope-panel" id="scope2">
-      <div class="scope-header"><span>CH 2: Square Wave</span><span>500 Hz</span></div>
+      <div class="scope-header"><span id="title2">CH 2: Square Wave</span><span>max:0.249</span></div>
       <div class="scope-canvas-container">
         <canvas class="scope-canvas" id="canvas2"></canvas>
         <span class="plot-region-badge" id="badge2"></span>
       </div>
     </section>
     <section class="scope-panel" id="scope3">
-      <div class="scope-header"><span>CH 3: Triangle Wave</span><span>250 Hz</span></div>
+      <div class="scope-header"><span id="title3">CH 3: Triangle Wave</span><span>max:0.249</span></div>
       <div class="scope-canvas-container">
         <canvas class="scope-canvas" id="canvas3"></canvas>
         <span class="plot-region-badge" id="badge3"></span>
       </div>
     </section>
     <section class="scope-panel" id="scope4">
-      <div class="scope-header"><span>CH 4: High-Freq Noise/Sine</span><span>2 kHz</span></div>
+      <div class="scope-header"><span id="title4">CH 4: High-Freq Noise/Sine</span><span>max:0.249</span></div>
       <div class="scope-canvas-container">
         <canvas class="scope-canvas" id="canvas4"></canvas>
         <span class="plot-region-badge" id="badge4"></span>
       </div>
     </section>
     <section class="scope-panel" id="scope5">
-      <div class="scope-header"><span>CH 5: Superposition Output</span><span>MATH</span></div>
+      <div class="scope-header"><span id="title5">CH 5: Superposition Output</span><span>max:0.249</span></div>
       <div class="scope-canvas-container">
         <canvas class="scope-canvas" id="canvas5"></canvas>
         <span class="plot-region-badge" id="badge5"></span>
       </div>
     </section>
     <section class="scope-panel" id="scope6">
-      <div class="scope-header"><span>CH 6: Modulation Signal</span><span>100 Hz</span></div>
+      <div class="scope-header"><span id="title6">CH 6: Modulation Signal</span><span>max:0.249</span></div>
       <div class="scope-canvas-container">
         <canvas class="scope-canvas" id="canvas6"></canvas>
         <span class="plot-region-badge" id="badge6"></span>
@@ -640,6 +640,25 @@
     let isMultimeterActive = false;
     let selectedProbe = null; // 'A', 'B', 'C', 'D', 'E'
 
+    // Map probe letters to channel indices (0-indexed: A->0, B->2, C->1, D->3, E->5)
+    const probeToChannelMap = {
+      'A': 0,
+      'B': 2,
+      'C': 1,
+      'D': 3,
+      'E': 5
+    };
+
+    // Store region selection for each probe/channel (defaults to null, meaning fallback generator)
+    const channelAssignedRegion = {
+      0: null,
+      1: null,
+      2: null,
+      3: null,
+      4: null,
+      5: null
+    };
+
     const multimeterBtn = document.getElementById("multimeterBtn");
     const probeBtns = {
       'A': document.getElementById("probeBtnA"),
@@ -695,19 +714,72 @@
     document.querySelectorAll(".purple-region").forEach(region => {
       region.addEventListener("click", () => {
         if (isMultimeterActive) {
-          const regionNum = region.getAttribute("data-region");
-          const targetBadge = selectedProbe ? probeToBadgeMap[selectedProbe] : document.getElementById("badge1");
+          const regionNum = parseInt(region.getAttribute("data-region"), 10);
+          const probeKey = selectedProbe || 'A';
+          const targetBadge = probeToBadgeMap[probeKey];
           
           if (targetBadge) {
             targetBadge.textContent = regionNum;
             targetBadge.style.display = "block";
           }
+
+          // Assign region data stream to corresponding channel
+          const chIdx = probeToChannelMap[probeKey];
+          channelAssignedRegion[chIdx] = regionNum;
+
+          // Update header title
+          const headerTitleEl = document.getElementById(`title${chIdx + 1}`);
+          if (headerTitleEl) {
+            headerTitleEl.textContent = `CH ${chIdx + 1}: B_${regionNum} (File)`;
+          }
+
+          // Load CSV data if not already cached
+          loadCsvForRegion(regionNum);
         }
       });
     });
   </script>
 
-  <!-- OSCILLOSCOPE ANIMATION -->
+  <!-- CSV DATA CACHE & STREAMING ENGINE -->
+  <script>
+    // Cache for 800,000 data points per region file
+    const regionCsvData = {};
+
+    function loadCsvForRegion(regionNum) {
+      if (regionCsvData[regionNum]) return; // already loaded
+
+      // Initialize empty array of 800,000 floats
+      regionCsvData[regionNum] = new Float32Array(800000);
+
+      const filePath = `traces/B_1/B_${regionNum}.csv`;
+      fetch(filePath)
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          return response.text();
+        })
+        .then(csvText => {
+          const lines = csvText.trim().split('\n');
+          let count = 0;
+          // Skip header if present, parse column values
+          for (let i = 0; i < lines.length && count < 800000; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            const parts = line.split(',');
+            // Assume second column is signal value, or first if single column
+            const valStr = parts.length >= 2 ? parts[1].trim() : parts[0].trim();
+            const val = parseFloat(valStr);
+            if (!isNaN(val)) {
+              regionCsvData[regionNum][count++] = val;
+            }
+          }
+        })
+        .catch(err => {
+          console.warn(`Could not load ${filePath}, falling back to synthetic generator.`, err);
+        });
+    }
+  </script>
+
+  <!-- OSCILLOSCOPE ANIMATION WITH EXTAPOLATED CONTINUOUS LINES & 0.249 SCALING -->
   <script>
     const canvasElements = [
       document.getElementById("canvas1"),
@@ -720,6 +792,8 @@
 
     const ctxs = canvasElements.map(canvas => canvas.getContext("2d"));
     let time = 0;
+    // Animation frame pointers for CSV looping
+    const csvPlaybackIndices = [0, 0, 0, 0, 0, 0];
 
     function resizeCanvas(canvas) {
       const rect = canvas.getBoundingClientRect();
@@ -755,8 +829,42 @@
       ctx.stroke();
     }
 
+    function getSampleValue(index, x, width, height, t) {
+      const assignedReg = channelAssignedRegion[index];
+      if (assignedReg !== null && regionCsvData[assignedReg]) {
+        // Stream looped data from CSV array (800,000 points)
+        const dataArr = regionCsvData[assignedReg];
+        let ptr = Math.floor(csvPlaybackIndices[index] + (x / width) * 2000) % 800000;
+        let rawVal = dataArr[ptr];
+        
+        // Scale 0.249 max value to fit canvas height without truncation
+        return (rawVal / 0.249) * (height * 0.44);
+      }
+
+      // Default built-in waveform generators
+      const s1 = Math.sin(t) * (height * 0.30);
+      const s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.25);
+      const s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.30);
+      const s4 = Math.sin(t * 4 + Math.cos(t)) * (height * 0.22);
+      const s6 = Math.sin(t * 0.5) * Math.cos(t * 3) * (height * 0.28);
+
+      if (index === 0) return s1;
+      if (index === 1) return s2;
+      if (index === 2) return s3;
+      if (index === 3) return s4;
+      if (index === 5) return s6;
+      return 0;
+    }
+
     function animate() {
       time += 0.04;
+      // Advance CSV looping pointers
+      for (let i = 0; i < 6; i++) {
+        if (channelAssignedRegion[i] !== null) {
+          csvPlaybackIndices[i] = (csvPlaybackIndices[i] + 400) % 800000;
+        }
+      }
+
       ctxs.forEach((ctx, index) => {
         const canvas = ctx.canvas;
         const { width, height } = resizeCanvas(canvas);
@@ -771,46 +879,29 @@
 
         for (let x = 0; x < width; x++) {
           const t = (x / width) * 4 * Math.PI + time;
-          const s1 = Math.sin(t) * (height * 0.30);
-          const s2 = (Math.sin(t * 2) > 0 ? 1 : -1) * (height * 0.25);
-          const s3 = (Math.asin(Math.sin(t)) * (2 / Math.PI)) * (height * 0.30);
-          const s4 = Math.sin(t * 4 + Math.cos(t)) * (height * 0.22);
-          const s6 = Math.sin(t * 0.5) * Math.cos(t * 3) * (height * 0.28);
+          let yVal = 0;
 
-          let yVal;
-          if (index === 0) { yVal = s1; ctx.strokeStyle = "#00ffcc"; }
-          else if (index === 1) { yVal = s2; ctx.strokeStyle = "#ff3366"; }
-          else if (index === 2) { yVal = s3; ctx.strokeStyle = "#00ffaa"; }
-          else if (index === 3) { yVal = s4; ctx.strokeStyle = "#33ccff"; }
-          else if (index === 4) {
-            yVal = 0;
-            if (document.getElementById("mix1").checked) {
-              let op = document.getElementById("op1").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s1 * 0.5);
+          if (index === 4) {
+            // Superposition Output (Channel 5 Math combination)
+            let mixSum = 0;
+            for (let m = 1; m <= 5; m++) {
+              if (document.getElementById(`mix${m}`).checked) {
+                let op = document.getElementById(`op${m}`).value;
+                let subIdx = m - 1;
+                let valSub = getSampleValue(subIdx, x, width, height, t);
+                mixSum += (op === 'sub' ? -1 : 1) * (valSub * 0.5);
+              }
             }
-            if (document.getElementById("mix2").checked) {
-              let op = document.getElementById("op2").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s2 * 0.5);
-            }
-            if (document.getElementById("mix3").checked) {
-              let op = document.getElementById("op3").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s3 * 0.5);
-            }
-            if (document.getElementById("mix4").checked) {
-              let op = document.getElementById("op4").value;
-              yVal += (op === 'sub' ? -1 : 1) * (s4 * 0.5);
-            }
-            if (document.getElementById("mix5").checked) {
-              let op = document.getElementById("op5").value;
-              let ch5SubVal = 0;
-              if (document.getElementById("mix1").checked) ch5SubVal += (document.getElementById("op1").value === 'sub' ? -1 : 1) * (s1 * 0.5);
-              if (document.getElementById("mix2").checked) ch5SubVal += (document.getElementById("op2").value === 'sub' ? -1 : 1) * (s2 * 0.5);
-              if (document.getElementById("mix3").checked) ch5SubVal += (document.getElementById("op3").value === 'sub' ? -1 : 1) * (s3 * 0.5);
-              if (document.getElementById("mix4").checked) ch5SubVal += (document.getElementById("op4").value === 'sub' ? -1 : 1) * (s4 * 0.5);
-              yVal += (op === 'sub' ? -1 : 1) * ch5SubVal;
-            }
+            yVal = mixSum;
             ctx.strokeStyle = "#ffcc00";
-          } else if (index === 5) { yVal = s6; ctx.strokeStyle = "#ff66cc"; }
+          } else {
+            yVal = getSampleValue(index, x, width, height, t);
+            if (index === 0) ctx.strokeStyle = "#00ffcc";
+            else if (index === 1) ctx.strokeStyle = "#ff3366";
+            else if (index === 2) ctx.strokeStyle = "#00ffaa";
+            else if (index === 3) ctx.strokeStyle = "#33ccff";
+            else if (index === 5) ctx.strokeStyle = "#ff66cc";
+          }
 
           const drawY = centerY - yVal;
           if (x === 0) ctx.moveTo(x, drawY);
@@ -827,7 +918,6 @@
   <script>
     let bVectorMap = new Map();
 
-    // 1. Fetch and parse B_vector.csv from traces/B_1/ directory matching the CSV index column
     fetch('traces/B_1/B_vector.csv')
       .then(response => {
         if (!response.ok) {
@@ -837,7 +927,6 @@
       })
       .then(csvText => {
         const lines = csvText.trim().split('\n');
-        // Skip header row (index, B_value)
         for (let i = 1; i < lines.length; i++) {
           const cols = lines[i].split(',');
           if (cols.length >= 2) {
@@ -853,18 +942,15 @@
         console.error('Error loading B_vector.csv from traces/B_1/:', error);
       });
 
-    // 2. Listen to input changes in the Identify Patterns field
     const patternInput = document.getElementById('patternInput');
     const pavOutputDisplay = document.getElementById('pavOutputDisplay');
 
     patternInput.addEventListener('input', (e) => {
-      // Restrict input exclusively to digits 0-9
       let val = e.target.value.replace(/[^0-9]/g, '');
       e.target.value = val;
 
       if (val !== '') {
         const searchedIndex = parseInt(val, 10);
-        // Look up the exact matching index from the CSV
         if (bVectorMap.has(searchedIndex)) {
           pavOutputDisplay.textContent = bVectorMap.get(searchedIndex).toFixed(4);
         } else {
