@@ -64,7 +64,7 @@
       display: block;
     }
 
-    /* Multimeter button link positioning */
+    /* Multimeter button link positioning (No green border highlight) */
     .link-multimeter {
       position: absolute;
       left: 22px;
@@ -74,12 +74,6 @@
       z-index: 30;
       display: block;
       cursor: pointer;
-    }
-
-    /* Active state highlight for multimeter button */
-    .link-multimeter.active {
-      outline: 2px solid #00ffcc;
-      box-shadow: 0 0 10px #00ffcc;
     }
 
     /* Matrix Calculator button link positioning */
@@ -236,7 +230,7 @@
 
 
     /* ============================================================
-       HIGHLIGHTED 9 PURPLE REGION OVERLAYS
+       CORRECTED 9 PURPLE REGION OVERLAYS (Aligned to user marks)
        ============================================================ */
     .purple-region {
       position: absolute;
@@ -244,20 +238,20 @@
       cursor: pointer;
     }
 
-    /* Bottom Row: Regions 1 - 4 */
-    #region1 { left: 165px; top: 275px; width: 175px; height: 185px; }
-    #region2 { left: 385px; top: 275px; width: 175px; height: 185px; }
-    #region3 { left: 605px; top: 275px; width: 175px; height: 185px; }
-    #region4 { left: 825px; top: 275px; width: 175px; height: 185px; }
+    /* Bottom Row (Regions 1 - 4): Starts down at the 'x's up to the middle boundary */
+    #region1 { left: 150px; top: 228px; width: 200px; height: 215px; }
+    #region2 { left: 360px; top: 228px; width: 200px; height: 215px; }
+    #region3 { left: 575px; top: 228px; width: 200px; height: 215px; }
+    #region4 { left: 785px; top: 228px; width: 200px; height: 215px; }
 
-    /* Top Row: Regions 5 - 8 */
-    #region5 { left: 165px; top: 80px; width: 175px; height: 185px; }
-    #region6 { left: 385px; top: 80px; width: 175px; height: 185px; }
-    #region7 { left: 605px; top: 80px; width: 175px; height: 185px; }
-    #region8 { left: 825px; top: 80px; width: 175px; height: 185px; }
+    /* Top Row (Regions 5 - 8): Starts from middle row up to top area */
+    #region5 { left: 150px; top: 72px; width: 200px; height: 154px; }
+    #region6 { left: 360px; top: 72px; width: 200px; height: 154px; }
+    #region7 { left: 575px; top: 72px; width: 200px; height: 154px; }
+    #region8 { left: 785px; top: 72px; width: 200px; height: 154px; }
 
-    /* Top Large Header Region: Region 9 */
-    #region9 { left: 150px; top: 15px; width: 850px; height: 55px; }
+    /* Top Header Area (Region 9): Positioned right above the two module rows */
+    #region9 { left: 150px; top: 20px; width: 835px; height: 50px; }
 
 
     /* ============================================================
@@ -573,7 +567,6 @@
       'E': document.getElementById("probeBtnE")
     };
 
-    // Mapping probe selection to corresponding Plot scope panels
     const probeToBadgeMap = {
       'A': document.getElementById("badge1"),
       'B': document.getElementById("badge3"),
@@ -583,7 +576,6 @@
     };
 
     function updateCursorState() {
-      // Clear existing probe & multimeter cursor classes
       document.body.classList.remove(
         "custom-cursor",
         "cursor-probe-a",
@@ -602,27 +594,22 @@
       }
     }
 
-    // Toggle Multimeter tool
     multimeterBtn.addEventListener("click", (e) => {
       e.preventDefault();
       isMultimeterActive = !isMultimeterActive;
-      multimeterBtn.classList.toggle("active", isMultimeterActive);
       if (!isMultimeterActive) selectedProbe = null;
       updateCursorState();
     });
 
-    // Handle probe button clicks
     Object.keys(probeBtns).forEach(probeKey => {
       probeBtns[probeKey].addEventListener("click", (e) => {
         e.preventDefault();
         isMultimeterActive = true;
-        multimeterBtn.classList.add("active");
         selectedProbe = probeKey;
         updateCursorState();
       });
     });
 
-    // Handle clicks inside the 9 purple regions
     document.querySelectorAll(".purple-region").forEach(region => {
       region.addEventListener("click", () => {
         if (isMultimeterActive) {
@@ -755,4 +742,3 @@
   </script>
 </body>
 </html>
-```[cite: 1]
