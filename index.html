@@ -438,12 +438,10 @@
       title="Activate multimeter probe cursor">
     </a>
 
-    <!-- Matrix Calculator button link (opens matrix calc and hint image simultaneously) -->
+    <!-- Matrix Calculator button link (opens matrix calc and hint image simultaneously via JS) -->
     <a
       class="link-matrix"
-      href="https://matrixcalc.org/#%7B%7B1,0,0,0,0,0,0,0,0%7D,%7B0,1,0,0,0,0,0,0,0%7D,%7B0,0,1,0,0,0,0,0,0%7D,%7B0,0,0,1,0,0,0,0,0%7D,%7B0,0,0,0,1,0,0,0,0%7D,%7B0,0,0,0,1,1,0,0,0%7D,%7B0,0,0,0,0,0,1,0,0%7D,%7B0,0,0,0,0,0,0,1,0%7D,%7B0,0,0,0,0,0,0,0,1%7D%7D*%7B%7B2%7D,%7B3%7D,%7B4%7D,%7B5%7D,%7B6%7D,%7B7%7D,%7B8%7D,%7B1%7D,%7B1%7D%7D"
-      target="_blank"
-      onclick="window.open('images/matrix_hint_calc.png', '_blank');"
+      id="matrixCalcBtn"
       aria-label="View Matrix Calculator and Hint"
       title="View Matrix Calculator and Hint">
     </a>
@@ -824,7 +822,7 @@
     animate();
   </script>
 
-  <!-- PROBE & MULTIMETER CURSOR SWITCHING SCRIPT -->
+  <!-- PROBE & MULTIMETER CURSOR SWITCHING & MATRIX BUTTON HANDLER -->
   <script>
     function setProbeCursor(cursorClassName) {
       const bodyClasses = document.body.classList;
@@ -864,6 +862,18 @@
       multimeterBtn.addEventListener("click", (e) => {
         e.preventDefault();
         setProbeCursor('custom-cursor');
+      });
+    }
+
+    // Matrix Calculator Button Click Handler (Opens Calculator & Hint image simultaneously)
+    const matrixCalcBtn = document.getElementById("matrixCalcBtn");
+    if (matrixCalcBtn) {
+      matrixCalcBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        // 1. Open the Matrix Calculator website in a new tab
+        window.open("https://matrixcalc.org/#%7B%7B1,0,0,0,0,0,0,0,0%7D,%7B0,1,0,0,0,0,0,0,0%7D,%7B0,0,1,0,0,0,0,0,0%7D,%7B0,0,0,1,0,0,0,0,0%7D,%7B0,0,0,0,1,0,0,0,0%7D,%7B0,0,0,0,1,1,0,0,0%7D,%7B0,0,0,0,0,0,1,0,0%7D,%7B0,0,0,0,0,0,0,1,0%7D,%7B0,0,0,0,0,0,0,0,1%7D%7D*%7B%7B2%7D,%7B3%7D,%7B4%7D,%7B5%7D,%7B6%7D,%7B7%7D,%7B8%7D,%7B1%7D,%7B1%7D%7D", "_blank");
+        // 2. Open the image hint in a separate new tab
+        window.open("images/matrix_hint_calc.png", "_blank");
       });
     }
 
