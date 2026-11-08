@@ -76,6 +76,12 @@
       cursor: pointer;
     }
 
+    /* Active state highlight for multimeter button */
+    .link-multimeter.active {
+      outline: 2px solid #00ffcc;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
     /* Matrix Calculator button link positioning */
     .link-matrix {
       position: absolute;
@@ -161,7 +167,7 @@
 
 
     /* ============================================================
-       SIX MOVING OSCILLOSCOPE PLOTS
+       SIX MOVING OSCILLOSCOPE PLOTS & DIGIT OVERLAY
        ============================================================ */
     .scope-panel {
       position: absolute;
@@ -203,11 +209,55 @@
       text-overflow: ellipsis;
     }
 
-    .scope-canvas {
+    .scope-canvas-container {
+      position: relative;
       width: 100%;
       height: calc(100% - 18px);
+    }
+
+    .scope-canvas {
+      width: 100%;
+      height: 100%;
       display: block;
     }
+
+    .plot-region-badge {
+      position: absolute;
+      right: 8px;
+      bottom: 2px;
+      font-size: 42px;
+      font-weight: 900;
+      color: #b15eff;
+      text-shadow: 0 0 10px #b15eff, 0 0 20px #000;
+      pointer-events: none;
+      z-index: 15;
+      display: none;
+    }
+
+
+    /* ============================================================
+       HIGHLIGHTED 9 PURPLE REGION OVERLAYS
+       ============================================================ */
+    .purple-region {
+      position: absolute;
+      z-index: 28;
+      cursor: pointer;
+    }
+
+    /* Bottom Row: Regions 1 - 4 */
+    #region1 { left: 165px; top: 275px; width: 175px; height: 185px; }
+    #region2 { left: 385px; top: 275px; width: 175px; height: 185px; }
+    #region3 { left: 605px; top: 275px; width: 175px; height: 185px; }
+    #region4 { left: 825px; top: 275px; width: 175px; height: 185px; }
+
+    /* Top Row: Regions 5 - 8 */
+    #region5 { left: 165px; top: 80px; width: 175px; height: 185px; }
+    #region6 { left: 385px; top: 80px; width: 175px; height: 185px; }
+    #region7 { left: 605px; top: 80px; width: 175px; height: 185px; }
+    #region8 { left: 825px; top: 80px; width: 175px; height: 185px; }
+
+    /* Top Large Header Region: Region 9 */
+    #region9 { left: 150px; top: 15px; width: 850px; height: 55px; }
 
 
     /* ============================================================
@@ -352,7 +402,7 @@
       title="Activate multimeter probe cursor">
     </a>
 
-    <!-- Matrix Calculator button link with href for right-click and onclick for hint image -->
+    <!-- Matrix Calculator button link -->
     <a
       class="link-matrix"
       href="https://matrixcalc.org/#%7B%7B1,0,0,0,0,0,0,0,0%7D,%7B0,1,0,0,0,0,0,0,0%7D,%7B0,0,1,0,0,0,0,0,0%7D,%7B0,0,0,1,0,0,0,0,0%7D,%7B0,0,0,0,1,0,0,0,0%7D,%7B0,0,0,0,1,1,0,0,0%7D,%7B0,0,0,0,0,0,1,0,0%7D,%7B0,0,0,0,0,0,0,1,0%7D,%7B0,0,0,0,0,0,0,0,1%7D%7D*%7B%7B2%7D,%7B3%7D,%7B4%7D,%7B5%7D,%7B6%7D,%7B7%7D,%7B8%7D,%7B1%7D,%7B1%7D%7D"
@@ -382,6 +432,16 @@
     <a class="link-probe" id="probeBtnD" aria-label="Probe D" title="Activate Probe D cursor"></a>
     <a class="link-probe" id="probeBtnE" aria-label="Probe E" title="Activate Probe E cursor"></a>
 
+    <!-- 9 PURPLE-MARKED MEASUREMENT REGIONS -->
+    <div class="purple-region" id="region1" data-region="1" title="Region 1"></div>
+    <div class="purple-region" id="region2" data-region="2" title="Region 2"></div>
+    <div class="purple-region" id="region3" data-region="3" title="Region 3"></div>
+    <div class="purple-region" id="region4" data-region="4" title="Region 4"></div>
+    <div class="purple-region" id="region5" data-region="5" title="Region 5"></div>
+    <div class="purple-region" id="region6" data-region="6" title="Region 6"></div>
+    <div class="purple-region" id="region7" data-region="7" title="Region 7"></div>
+    <div class="purple-region" id="region8" data-region="8" title="Region 8"></div>
+    <div class="purple-region" id="region9" data-region="9" title="Region 9"></div>
 
     <!-- EM LEAKAGE SIGNAL LOCATIONS -->
     <div class="em-signal-spot" style="left: 320px; top: 120px;">
@@ -409,33 +469,49 @@
       <div class="em-arc em-arc-1"></div><div class="em-arc em-arc-2"></div><div class="em-arc em-arc-3"></div>
     </div>
 
-
     <!-- SIX ANIMATED PLOTS -->
     <section class="scope-panel" id="scope1">
       <div class="scope-header"><span>CH 1: Sine Wave</span><span>1 kHz</span></div>
-      <canvas class="scope-canvas" id="canvas1"></canvas>
+      <div class="scope-canvas-container">
+        <canvas class="scope-canvas" id="canvas1"></canvas>
+        <span class="plot-region-badge" id="badge1"></span>
+      </div>
     </section>
     <section class="scope-panel" id="scope2">
       <div class="scope-header"><span>CH 2: Square Wave</span><span>500 Hz</span></div>
-      <canvas class="scope-canvas" id="canvas2"></canvas>
+      <div class="scope-canvas-container">
+        <canvas class="scope-canvas" id="canvas2"></canvas>
+        <span class="plot-region-badge" id="badge2"></span>
+      </div>
     </section>
     <section class="scope-panel" id="scope3">
       <div class="scope-header"><span>CH 3: Triangle Wave</span><span>250 Hz</span></div>
-      <canvas class="scope-canvas" id="canvas3"></canvas>
+      <div class="scope-canvas-container">
+        <canvas class="scope-canvas" id="canvas3"></canvas>
+        <span class="plot-region-badge" id="badge3"></span>
+      </div>
     </section>
     <section class="scope-panel" id="scope4">
       <div class="scope-header"><span>CH 4: High-Freq Noise/Sine</span><span>2 kHz</span></div>
-      <canvas class="scope-canvas" id="canvas4"></canvas>
+      <div class="scope-canvas-container">
+        <canvas class="scope-canvas" id="canvas4"></canvas>
+        <span class="plot-region-badge" id="badge4"></span>
+      </div>
     </section>
     <section class="scope-panel" id="scope5">
       <div class="scope-header"><span>CH 5: Superposition Output</span><span>MATH</span></div>
-      <canvas class="scope-canvas" id="canvas5"></canvas>
+      <div class="scope-canvas-container">
+        <canvas class="scope-canvas" id="canvas5"></canvas>
+        <span class="plot-region-badge" id="badge5"></span>
+      </div>
     </section>
     <section class="scope-panel" id="scope6">
       <div class="scope-header"><span>CH 6: Modulation Signal</span><span>100 Hz</span></div>
-      <canvas class="scope-canvas" id="canvas6"></canvas>
+      <div class="scope-canvas-container">
+        <canvas class="scope-canvas" id="canvas6"></canvas>
+        <span class="plot-region-badge" id="badge6"></span>
+      </div>
     </section>
-
 
     <!-- MIXER -->
     <section class="calc-panel">
@@ -478,37 +554,89 @@
       </div>
     </section>
 
-
     <div id="loading" class="hidden"></div>
     <div id="wave-grid" class="hidden"></div>
 
   </main>
 
-
-  <!-- SCRIPTS -->
+  <!-- MULTIMETER & PROBE MEASUREMENT SELECTION SCRIPT -->
   <script>
-    setTimeout(() => {
-      document.getElementById("loading").classList.remove("hidden");
-    }, 120000);
-  </script>
+    let isMultimeterActive = false;
+    let selectedProbe = null; // 'A', 'B', 'C', 'D', 'E'
 
-  <script>
-    let timerStarted = false;
-    document.addEventListener("click", () => {
-      if (timerStarted) return;
-      timerStarted = true;
-      setTimeout(() => {
-        document.getElementById("wave-grid").classList.remove("hidden");
-      }, 120000);
+    const multimeterBtn = document.getElementById("multimeterBtn");
+    const probeBtns = {
+      'A': document.getElementById("probeBtnA"),
+      'B': document.getElementById("probeBtnB"),
+      'C': document.getElementById("probeBtnC"),
+      'D': document.getElementById("probeBtnD"),
+      'E': document.getElementById("probeBtnE")
+    };
+
+    // Mapping probe selection to corresponding Plot scope panels
+    const probeToBadgeMap = {
+      'A': document.getElementById("badge1"),
+      'B': document.getElementById("badge3"),
+      'C': document.getElementById("badge2"),
+      'D': document.getElementById("badge4"),
+      'E': document.getElementById("badge6")
+    };
+
+    function updateCursorState() {
+      // Clear existing probe & multimeter cursor classes
+      document.body.classList.remove(
+        "custom-cursor",
+        "cursor-probe-a",
+        "cursor-probe-b",
+        "cursor-probe-c",
+        "cursor-probe-d",
+        "cursor-probe-e"
+      );
+
+      if (isMultimeterActive) {
+        if (selectedProbe) {
+          document.body.classList.add(`cursor-probe-${selectedProbe.toLowerCase()}`);
+        } else {
+          document.body.classList.add("custom-cursor");
+        }
+      }
+    }
+
+    // Toggle Multimeter tool
+    multimeterBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      isMultimeterActive = !isMultimeterActive;
+      multimeterBtn.classList.toggle("active", isMultimeterActive);
+      if (!isMultimeterActive) selectedProbe = null;
+      updateCursorState();
+    });
+
+    // Handle probe button clicks
+    Object.keys(probeBtns).forEach(probeKey => {
+      probeBtns[probeKey].addEventListener("click", (e) => {
+        e.preventDefault();
+        isMultimeterActive = true;
+        multimeterBtn.classList.add("active");
+        selectedProbe = probeKey;
+        updateCursorState();
+      });
+    });
+
+    // Handle clicks inside the 9 purple regions
+    document.querySelectorAll(".purple-region").forEach(region => {
+      region.addEventListener("click", () => {
+        if (isMultimeterActive) {
+          const regionNum = region.getAttribute("data-region");
+          const targetBadge = selectedProbe ? probeToBadgeMap[selectedProbe] : document.getElementById("badge1");
+          
+          if (targetBadge) {
+            targetBadge.textContent = regionNum;
+            targetBadge.style.display = "block";
+          }
+        }
+      });
     });
   </script>
-
-  <script>
-    setTimeout(() => {
-      document.body.classList.add("em-leakage-active");
-    }, 120000);
-  </script>
-
 
   <!-- OSCILLOSCOPE ANIMATION -->
   <script>
@@ -612,4 +740,19 @@
               if (document.getElementById("mix4").checked) ch5SubVal += (document.getElementById("op4").value === 'sub' ? -1 : 1) * (s4 * 0.5);
               yVal += (op === 'sub' ? -1 : 1) * ch5SubVal;
             }
-            ctx.strokeStyle = "#ffcc
+            ctx.strokeStyle = "#ffcc00";
+          } else if (index === 5) { yVal = s6; ctx.strokeStyle = "#ff66cc"; }
+
+          const drawY = centerY - yVal;
+          if (x === 0) ctx.moveTo(x, drawY);
+          else ctx.lineTo(x, drawY);
+        }
+        ctx.stroke();
+      });
+      requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
+```[cite: 1]
