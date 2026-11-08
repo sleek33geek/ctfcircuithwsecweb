@@ -303,7 +303,7 @@
 
 
     /* ============================================================
-       EM LEAKAGE SIGNALS (CHIP AREA)
+       EM LEAKAGE SIGNALS (CHIP AREA) - BLACK WAVES BOTTOM TO TOP
        ============================================================ */
     .em-signal-spot {
       position: absolute;
@@ -318,21 +318,13 @@
     }
 
     body.em-leakage-active .em-signal-spot {
-      animation: emLeakageCycle 3s infinite ease-in-out;
+      opacity: 1;
     }
-
-    .em-signal-spot:nth-child(2) { animation-delay: 0.4s; }
-    .em-signal-spot:nth-child(3) { animation-delay: 0.8s; }
-    .em-signal-spot:nth-child(4) { animation-delay: 1.2s; }
-    .em-signal-spot:nth-child(5) { animation-delay: 0.3s; }
-    .em-signal-spot:nth-child(6) { animation-delay: 0.9s; }
-    .em-signal-spot:nth-child(7) { animation-delay: 1.5s; }
-    .em-signal-spot:nth-child(8) { animation-delay: 0.6s; }
 
     .em-arc {
       position: absolute;
-      border: 2px solid #ff3366;
-      border-top: 2px solid #ff3366;
+      border: 3px solid #000000;
+      border-top: 3px solid #000000;
       border-bottom: none;
       border-left: none;
       border-right: none;
@@ -340,21 +332,34 @@
       opacity: 0;
     }
 
-    .em-arc-1 { width: 12px; height: 6px; bottom: 2px; animation: arcFadeSequence 3s infinite; }
-    .em-arc-2 { width: 24px; height: 12px; bottom: 7px; animation: arcFadeSequence 3s infinite; animation-delay: 0.25s; }
-    .em-arc-3 { width: 36px; height: 18px; bottom: 12px; animation: arcFadeSequence 3s infinite; animation-delay: 0.5s; }
-
-    @keyframes arcFadeSequence {
-      0% { opacity: 0; transform: scale(0.8); }
-      20% { opacity: 1; transform: scale(1); }
-      60% { opacity: 1; transform: scale(1); }
-      80% { opacity: 0; transform: scale(1.1); }
-      100% { opacity: 0; transform: scale(0.8); }
+    /* Bottom-to-top progressive wave sequence */
+    .em-arc-1 { 
+      width: 14px; 
+      height: 7px; 
+      bottom: 2px; 
+      animation: blackWaveSeq 2.8s infinite ease-in-out; 
+    }
+    .em-arc-2 { 
+      width: 26px; 
+      height: 13px; 
+      bottom: 7px; 
+      animation: blackWaveSeq 2.8s infinite ease-in-out; 
+      animation-delay: 0.35s; 
+    }
+    .em-arc-3 { 
+      width: 38px; 
+      height: 19px; 
+      bottom: 12px; 
+      animation: blackWaveSeq 2.8s infinite ease-in-out; 
+      animation-delay: 0.70s; 
     }
 
-    @keyframes emLeakageCycle {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
+    @keyframes blackWaveSeq {
+      0% { opacity: 0; transform: scale(0.5); }
+      25% { opacity: 1; transform: scale(1); }
+      65% { opacity: 1; transform: scale(1); }
+      85% { opacity: 0; transform: scale(1.15); }
+      100% { opacity: 0; transform: scale(0.5); }
     }
 
     .hidden {
@@ -634,6 +639,13 @@
   <!-- ============================================================
        SCRIPTS SECTION
        ============================================================ -->
+
+  <!-- 2-MINUTE TIMER FOR EM LEAKAGE ACTIVATION -->
+  <script>
+    setTimeout(() => {
+      document.body.classList.add('em-leakage-active');
+    }, 120000); // 120,000 ms = 2 minutes
+  </script>
 
   <!-- MULTIMETER & PROBE MEASUREMENT SELECTION SCRIPT -->
   <script>
