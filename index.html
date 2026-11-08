@@ -571,13 +571,13 @@
       <div class="calc-title">Superposition Mixer</div>
       <div class="mix-row">
         <div class="mix-controls">
-          <label><input type="checkbox" id="mix1" checked> CH.A</label>
+          <label><input type="checkbox" id="mix1" checked> CH1</label>
           <select id="op1" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
             <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
         <div class="mix-controls">
-          <label><input type="checkbox" id="mix2" checked> CH.B</label>
+          <label><input type="checkbox" id="mix2" checked> CH2</label>
           <select id="op2" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
             <option value="add">+</option><option value="sub">-</option>
           </select>
@@ -585,13 +585,13 @@
       </div>
       <div class="mix-row">
         <div class="mix-controls">
-          <label><input type="checkbox" id="mix3"> CH.C</label>
+          <label><input type="checkbox" id="mix3"> CH3</label>
           <select id="op3" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
             <option value="add">+</option><option value="sub">-</option>
           </select>
         </div>
         <div class="mix-controls">
-          <label><input type="checkbox" id="mix4"> CH.D</label>
+          <label><input type="checkbox" id="mix4"> CH4</label>
           <select id="op4" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
             <option value="add">+</option><option value="sub">-</option>
           </select>
@@ -599,7 +599,7 @@
       </div>
       <div class="mix-row">
         <div class="mix-controls">
-          <label><input type="checkbox" id="mix5"> CH.E</label>
+          <label><input type="checkbox" id="mix5"> CH5</label>
           <select id="op5" style="background:#111; color:#00ff88; border:1px solid #00ff88; font-size:9px;">
             <option value="add">+</option><option value="sub">-</option>
           </select>
@@ -729,7 +729,7 @@
     });
   </script>
 
-  <!-- CSV DATA CACHE & STREAMING ENGINE -->
+  <!-- CSV DATA CACHE & SYNCHRONIZED STREAMING ENGINE -->
   <script>
     const regionCsvData = {};
 
@@ -764,7 +764,7 @@
     }
   </script>
 
-  <!-- OSCILLOSCOPE ANIMATION WITH 0 to 0.249 VERTICAL Y-AXIS MAPPING -->
+  <!-- OSCILLOSCOPE ANIMATION WITH GLOBAL CLOCK SYNCHRONIZATION -->
   <script>
     const canvasElements = [
       document.getElementById("canvas1"),
@@ -777,7 +777,8 @@
 
     const ctxs = canvasElements.map(canvas => canvas.getContext("2d"));
     let time = 0;
-    const csvPlaybackIndices = [0, 0, 0, 0, 0, 0];
+    // Single unified global clock index for all CSV traces (synchronized clock)
+    let globalCsvIndex = 0;
 
     function resizeCanvas(canvas) {
       const rect = canvas.getBoundingClientRect();
@@ -819,10 +820,10 @@
 
       if (assignedReg !== null && regionCsvData[assignedReg]) {
         const dataArr = regionCsvData[assignedReg];
-        let ptr = Math.floor(csvPlaybackIndices[index] + (x / width) * 2000) % 800000;
+        // Lock all active CSV plots to the exact same global clock index (interpolated across width)
+        let ptr = Math.floor(globalCsvIndex + (x / width) * 800) % 800000;
         val = dataArr[ptr];
       } else {
-        // Built-in generators mapped directly into 0 to 0.249 range
         if (index === 0) {
           val = 0.1245 + 0.1245 * Math.sin(t);
         } else if (index === 1) {
@@ -836,19 +837,15 @@
         }
       }
 
-      // Map [0, 0.249] to canvas vertical coordinates (0 at bottom, 0.249 at top)
       let clamped = Math.max(0, Math.min(0.249, val));
       let norm = clamped / 0.249;
       return height - (norm * (height - 12)) - 6;
     }
 
     function animate() {
-      time += 0.04;
-      for (let i = 0; i < 6; i++) {
-        if (channelAssignedRegion[i] !== null) {
-          csvPlaybackIndices[i] = (csvPlaybackIndices[i] + 40) % 800000;
-        }
-      }
+      time += 0.015;
+      // Advance the single synchronized clock for all channels simultaneously
+      globalCsvIndex = (globalCsvIndex + 40) % 800000;
 
       ctxs.forEach((ctx, index) => {
         const canvas = ctx.canvas;
@@ -866,7 +863,6 @@
           let drawY = 0;
 
           if (index === 4) {
-            // Superposition Output (Math channel calculation)
             let mixSum = 0;
             for (let m = 1; m <= 5; m++) {
               if (document.getElementById(`mix${m}`).checked) {
