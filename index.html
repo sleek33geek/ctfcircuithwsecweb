@@ -230,7 +230,7 @@
 
 
     /* ============================================================
-       PRECISE CHIP MODULE REGION OVERLAYS (Aura Removed)
+       LOWERED CHIP MODULE REGION OVERLAYS
        ============================================================ */
     .purple-region {
       position: absolute;
@@ -238,20 +238,20 @@
       cursor: pointer;
     }
 
-    /* Bottom Row (Regions 1 - 4): Lower chip modules (approx. Y: 245px to 445px) */
-    #region1 { left: 148px; top: 245px; width: 210px; height: 195px; }
-    #region2 { left: 362px; top: 245px; width: 210px; height: 195px; }
-    #region3 { left: 576px; top: 245px; width: 210px; height: 195px; }
-    #region4 { left: 790px; top: 245px; width: 210px; height: 195px; }
+    /* Bottom Row (Regions 1 - 4): Sits right above the blue panel covering lower chip row */
+    #region1 { left: 148px; top: 450px; width: 210px; height: 205px; }
+    #region2 { left: 362px; top: 450px; width: 210px; height: 205px; }
+    #region3 { left: 576px; top: 450px; width: 210px; height: 205px; }
+    #region4 { left: 790px; top: 450px; width: 210px; height: 205px; }
 
-    /* Top Row (Regions 5 - 8): Upper chip modules (approx. Y: 50px to 245px) */
-    #region5 { left: 148px; top: 50px; width: 210px; height: 195px; }
-    #region6 { left: 362px; top: 50px; width: 210px; height: 195px; }
-    #region7 { left: 576px; top: 50px; width: 210px; height: 195px; }
-    #region8 { left: 790px; top: 50px; width: 210px; height: 195px; }
+    /* Top Row (Regions 5 - 8): Covers upper chip module row */
+    #region5 { left: 148px; top: 242px; width: 210px; height: 205px; }
+    #region6 { left: 362px; top: 242px; width: 210px; height: 205px; }
+    #region7 { left: 576px; top: 242px; width: 210px; height: 205px; }
+    #region8 { left: 790px; top: 242px; width: 210px; height: 205px; }
 
-    /* Top Header Area (Region 9): Top banner band above chip modules */
-    #region9 { left: 148px; top: 0px; width: 852px; height: 50px; }
+    /* Top Header Area (Region 9): Positioned right above top row */
+    #region9 { left: 148px; top: 178px; width: 852px; height: 60px; }
 
 
     /* ============================================================
